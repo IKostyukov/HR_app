@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Стартовая страница</title>
+    <link 
+href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+rel="stylesheet"
+integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+crossorigin="anonymous"> 
+</head>
+
+<body>
+<h3>стартовая страница</h3>
+{% if username %}  
+    <h1>Привет, {{ username }}!</h1> 
+    <p>Тут ты можешь <a href="logout">выйти</a>.</p> 
+
+    {% if user_type  %}
+        <p>(this page is only for {{ usertype }})</p> 
+    {% endif %} 
+
+    {% load static %}
+    <img src='{% static "kniga_derevo_5291.jpg" %}',  alt="Книга с деревом" width="300" height="200"> 
+    
+    <p>Ответь на вопросы</p>
+        {% for quest in quests %}
+           <br> {{ quest.question }} {{ quest.image }}
+        {% endfor %}
+{% else %}  
+    <p>Вам нужно <a href='register'>зарегистрироваться</a> 
+        или <a href='login'>войти</a></p>  
+{% endif %} 
+
+
+
+
+
+
+</body>
+
+</html>
