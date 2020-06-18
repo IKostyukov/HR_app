@@ -37,11 +37,11 @@
 question_list = QuestionList(id=1)
 question_in_list = QuestionInList.filter(question_list=question_list)
 
-{% for question_in_list in question_in_list %}
-    title: question_in_list.question.title
-    for answer in question_in_list.question.answers:
-        answer.title
-{% endfor %}
+# {% for question_in_list in question_in_list %}
+#     title: question_in_list.question.title
+#     for answer in question_in_list.question.answers:
+#         answer.title
+# {% endfor %}
 
 
 
