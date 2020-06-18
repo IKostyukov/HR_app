@@ -1,6 +1,6 @@
 from django.contrib import admin
-from liz.models import Employee, EmployeeAnswer, Question, QuestionnaireType, RightAnswer, QuestionnaireContent
-
+from liz.models import Employee, EmployeeAnswer, Question,  RightAnswer, QuestionnaireContent
+# QuestionnaireType,
 # Register your models here.
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
@@ -16,9 +16,9 @@ class EmployeeAdmin(admin.ModelAdmin):
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('question', 'image')
 
-@admin.register(QuestionnaireType)
-class QuestionnaireTypeAdmin(admin.ModelAdmin):
-    pass
+# @admin.register(QuestionnaireType)
+# class QuestionnaireTypeAdmin(admin.ModelAdmin):
+#     pass
 
 @admin.register(QuestionnaireContent)
 class QuestionnaireContentAdmin(admin.ModelAdmin):
