@@ -1,7 +1,8 @@
 from django.contrib import admin
-from liz.models import Employee, EmployeeAnswer, Question,  RightAnswer, QuestionnaireContent
-# QuestionnaireType,
-# Register your models here.
+from liz.models import User, Employee, Question,  EmployeeAnswer, Questionnaire
+#from liz.models import EmployeeAnswer,  QuestionnaireContent, QuestionnaireResult
+from liz.models import AppointTo
+
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     
@@ -14,22 +15,33 @@ class EmployeeAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('question', 'image')
-
-# @admin.register(QuestionnaireType)
-# class QuestionnaireTypeAdmin(admin.ModelAdmin):
-#     pass
-
-@admin.register(QuestionnaireContent)
-class QuestionnaireContentAdmin(admin.ModelAdmin):
-    pass
-    # list_display = ('')
-
-@admin.register(RightAnswer)
-class RightAnswerAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('question', 'image', 'answer_right', 'answer_weight')
 
 
 @admin.register(EmployeeAnswer)
 class EmployeeAnswerAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Questionnaire)
+class QuestionnaireAdmin(admin.ModelAdmin):
+    pass
+    
+
+@admin.register(AppointTo)
+class AppointToAdmin(admin.ModelAdmin):
+    list_display = ('users', 'questionnaires', 'date_start', 'date_finish' )
+
+# @admin.register(QuestionnaireContent)
+# class QuestionnaireContentAdmin(admin.ModelAdmin):
+#     pass
+    # list_display = ('')
+
+# @admin.register(EmployeeAnswer)
+# class EmployeeAnswerAdmin(admin.ModelAdmin):
+#     pass
+
+# @admin.register(QuestionnaireResult)
+# class QuestionnaireResultAdmin(admin.ModelAdmin):
+#     pass
+

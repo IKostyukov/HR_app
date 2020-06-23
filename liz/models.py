@@ -1,104 +1,182 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
+# from django.contrib.postgres.fields import JSONField
 
-# Create your models here.
+# ANSWER_TYPE = [
+#     ('One', 'Один правильный ответ'),
+#     ('Multi', 'Несколько правильных ответов'),
+# ]
 
 USER_TYPE = [
-        ('MG', 'Manager'),
-        ('CW', 'Coworker'), 
+        ('MG', 'Менеджер'),
+        ('CW', 'Сотрудник'), 
         ]
+
+QUESTIONE_TYPE = [
+        ('RADIO',  'c одним вариантом ответа'),
+        ('CHECKBOXES', ' с несколькими вариантами'),
+    ]
 
 class Employee(models.Model):
     MANAGER = 'MG'
     COWORKER = 'CW'    
-    
+    user_name = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE, related_name='employee')
+    department =  models.CharField(max_length=100)
     user_type = models.CharField(
         max_length=10, 
         choices = USER_TYPE, 
         default = COWORKER,
         null=True, blank=True)
 
-    user_name = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE, related_name='employee')
-    department =  models.CharField(max_length=100)
-
     def __str__(self):
         return self.user_name.username
 
     class Meta:
-        verbose_name = "Сотрудник"
-        verbose_name_plural = "Сотрудники"
-
+        verbose_name = "1) Сотрудник"
+        verbose_name_plural = "1) Сотрудники"
 
 
 class Question(models.Model):
-    question = models.TextField()
+    question = models.CharField("Название вопроса", max_length=128, null=True)
     image = models.ImageField(upload_to='photos/%Y/%m/%d', null=True, blank=True)
-    QUESTIONE_TYPE = [
-        ('RADIO',  'c одним вариантом ответа'),
-        ('CHECKBOXES', ' с несколькими вариантами'),
-    ]
-    question_type = models.CharField(max_length=10, verbose_name='тип вопросов',
-     choices=(QUESTIONE_TYPE), blank=True)
-    point = models.PositiveIntegerField(default=0)
+    question_type = models.CharField(max_length=10, 
+    choices=(QUESTIONE_TYPE), blank=True, default='RADIO', verbose_name='тип вопросов')
+    answer_right = models.CharField(max_length=128, null=True)
+    answer_weight = models.SmallIntegerField("Баллы за ответ", default=1)
 
     def __str__(self):
         return self.question 
     
     class Meta:
-        verbose_name = "Вопрос"
-        verbose_name_plural = 'Вопросы'
+        verbose_name = "2) Вопрос"
+        verbose_name_plural = '2) Вопросы'
 
 
-# class QuestionnaireType(models.Model):
-    
-#     qr_title = models.CharField(max_length=25, verbose_name='Название опросника')
-#     qr_description = models.TextField(verbose_name='Описание')
-    
-#     def __str__(self):
-#         return self.qr_title
-
-#     class Meta:
-#         verbose_name = "Опросник"
-#         verbose_name_plural = 'Опросники'
-    
+class Questionnaire(models.Model):    
+    title = models.CharField("Название опросника", max_length=25,  null=True, blank=True)
+    description = models.CharField("Описание", max_length=256, null=True, blank=True)
+    questions = models.ManyToManyField(Question, verbose_name="Вопросы в текущем опроснике" )
+    users = models.ManyToManyField(
+        Employee,
+        through="AppointTo", 
+        verbose_name="Открыто для отрудников", 
+        blank=True)
     
 
-class QuestionnaireContent(models.Model):    
-    title = models.CharField(max_length=25,  null=True, blank=True,  verbose_name='Название опросника')
-    description = models.CharField(max_length=256, null=True, blank=True,  verbose_name='Описание')
-    question = models.ManyToManyField(Question)
-    # questionnarie = models.ForeignKey(QuestionnaireType,  on_delete=models.CASCADE)
-
+    @property
+    def isOpen(self):
+        if self.date_finish >= datetime.today().date(): 
+            return True
+        else:
+            return False
+        
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name = "Содержание опросника"
-        verbose_name_plural = 'Содержание опросников'
+        verbose_name = "3) Опросник"
+        verbose_name_plural = '3) Опросники'
 
-class RightAnswer(models.Model):
-    right_answer = models.CharField(max_length=100)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = "Правильныйтвет"
-        verbose_name_plural = 'Правильные ответы'
-    
 
 class EmployeeAnswer(models.Model):
-    user = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='user')
-    question = models.ForeignKey(QuestionnaireContent, on_delete=models.CASCADE, related_name='answered_question')
-    user_answer = models.CharField( null=True, blank=True,  max_length=256)
-    correct = models.BooleanField()
+    users = models.ForeignKey(Employee, on_delete=models.CASCADE, verbose_name='сотрудники')
+    questionnaries = models.ForeignKey(Questionnaire,  null=True, blank=True, on_delete=models.CASCADE, verbose_name='вопросник')
+    questions = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='вопросы')
+    user_answer = models.CharField("Ответ на вопрос", max_length=256,  null=True, blank=True,)
+    is_correct = models.BooleanField()
 
     def __str__(self):
-        return str(self.user.user_name.username)
-    
+        return self.users.user_name.username
+
+   
     class Meta:
-        verbose_name = "ответ сотрудника"
-        verbose_name_plural = 'ответы сотрудников'
+        verbose_name = "4) Ответы сотрудника"
+        verbose_name_plural = '4) Ответы сотрудников'     
 
 
+class AppointTo(models.Model):
+    users = models. ForeignKey(
+        Employee, 
+        on_delete=models.CASCADE, 
+        blank=True,
+        verbose_name='сотрудник' )
+    questionnaires = models.ForeignKey(
+        Questionnaire, 
+        on_delete=models.CASCADE, 
+        blank=True,
+        verbose_name='опросник' )
+    date_start = models.DateField("Дата начала опроса", default=datetime.now, blank=True)
+    date_finish = models.DateField("Дата окончания опроса", default=datetime.now, blank=True)
+ 
+    def __srt__(self):
+        return  self.users.employee
+
+    class Meta:
+        verbose_name = 'Опросники открытые'
+        verbose_name_plural = 'Опросники открытые'  
 
 
+# class ShowResults(models.Model):
 
+
+# class RightAnswer(models.Model):
+#     question = models.ForeignKey(Question, null=True, related_name='good_answer', on_delete=models.CASCADE)
+#     answer = models.CharField(max_length=128, null=True)
+    
+#     class Meta:
+#         verbose_name = "Правильныйтвет"
+#         verbose_name_plural = 'Правильные ответы'
+        
+
+
+# class QuestionnaireContent(models.Model):
+#     question = models.ForeignKey(Question, null=True, on_delete=models.CASCADE, verbose_name="Вопрос")
+#     questionnaire = models.ForeignKey(Questionnaire, null=True,
+#      on_delete=models.CASCADE, verbose_name="Опросник")
+#     time_to_answer = models.SmallIntegerField("Время на ответ", default=0)
+#     answer_weight = models.SmallIntegerField("Вес ответа", default=1)
+
+#     def __str__(self):
+#         return f"{self.questionnaire} - {self.question} - {self.time_to_answer} - {self.answer_weight}"
+
+#     class Meta:
+#         verbose_name = "Содержимое опросника"
+#         verbose_name_plural = "Содержимое опросников"
+
+   
+
+# class QuestionnaireResult(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Сотрудник")
+#     questionnaire_content = models.ForeignKey(QuestionnaireContent, on_delete=models.CASCADE)
+#     answer = JSONField(default=list) # список правильных ответов по всему опроснику
+
+#     @property
+#     def score(self):
+#         question = self.questionnaire_content.question
+#         weight = self.questionnaire_content.answer_weight
+#         answerList = []
+#         if not isinstance (self.answer, list):
+#             answerList.append(self.answer)
+#         else:
+#             answerList = self.answer
+#         response = EmployeeAnswer.objects.filter(question=question)
+#         answer_score = 0
+#         for i in response:
+#             if self.questionnaire_content.question.question_type == 'CHECKBOXES':
+#                 for j in answerList:
+#                     if i.user_answer == j:
+#                         answer_score += weight
+#             if self.questionnaire_content.question.question_type == 'RADIO':
+#                 for j in answerList:
+#                     if i.user_answer == j:
+#                         if i.isCorrect:
+#                             answer_score += 1
+#                         # else:
+#                         #     answer_score -= 1
+#         return answer_score 
+#         # * self.questionnaire_content.answer_weight
+
+#     class Meta:
+#         verbose_name = "Результат по опроснику"
+#         verbose_name_plural = "Результаты по всем опросникам"
