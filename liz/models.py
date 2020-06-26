@@ -30,40 +30,44 @@ class Employee(models.Model):
         null=True, blank=True)
 
     def __str__(self):
-        return self.user_name.username
+        if self.user_name.username:
+            return self.user_name.username
 
     class Meta:
-        verbose_name = "1) Сотрудник"
+        verbose_name = "Сотрудник"
         verbose_name_plural = "1) Сотрудники"
 
 
 class Question(models.Model):
-    question = models.CharField("Название вопроса", max_length=128, null=True)
+    question = models.CharField("Вопрос", max_length=128, null=True)
     image = models.ImageField(upload_to='photos/%Y/%m/%d', null=True, blank=True)
     question_type = models.CharField(max_length=10, 
     choices=(QUESTIONE_TYPE), blank=True, default='RADIO', verbose_name='тип вопросов')
-    answer_right = models.CharField(max_length=128, null=True)
-    answer_weight = models.SmallIntegerField("Баллы за ответ", default=1)
+    answer_right = models.CharField(max_length=128, blank=True, null=True)
+    answer_weight = models.SmallIntegerField("Баллы", default=1)
 
     def __str__(self):
         return self.question 
     
     class Meta:
-        verbose_name = "2) Вопрос"
+        verbose_name = "Вопрос"
         verbose_name_plural = '2) Вопросы'
 
 
 class Questionnaire(models.Model):    
     title = models.CharField("Название опросника", max_length=25,  null=True, blank=True)
     description = models.CharField("Описание", max_length=256, null=True, blank=True)
-    questions = models.ManyToManyField(Question, verbose_name="Вопросы в текущем опроснике" )
+    questions = models.ManyToManyField(
+        Question, 
+        verbose_name="Вопросы в текущем опроснике", 
+        related_name="questionnaires" 
+        )
     users = models.ManyToManyField(
         Employee,
         through="AppointTo", 
         verbose_name="Открыто для отрудников", 
         blank=True)
     
-
     @property
     def isOpen(self):
         if self.date_finish >= datetime.today().date(): 
@@ -75,24 +79,24 @@ class Questionnaire(models.Model):
         return self.title
 
     class Meta:
-        verbose_name = "3) Опросник"
+        verbose_name = "Опросник"
         verbose_name_plural = '3) Опросники'
 
 
 class EmployeeAnswer(models.Model):
-    users = models.ForeignKey(Employee, on_delete=models.CASCADE, verbose_name='сотрудники')
-    questionnaries = models.ForeignKey(Questionnaire,  null=True, blank=True, on_delete=models.CASCADE, verbose_name='вопросник')
+    users = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.CASCADE, verbose_name='сотрудники')
+    questionnaires = models.ForeignKey(Questionnaire,  null=True, blank=True, on_delete=models.CASCADE, verbose_name='вопросник')
     questions = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='вопросы')
     user_answer = models.CharField("Ответ на вопрос", max_length=256,  null=True, blank=True,)
     is_correct = models.BooleanField()
-
+    
     def __str__(self):
-        return self.users.user_name.username
+        if self.users.user_name.username:
+            return self.users.user_name.username
 
-   
     class Meta:
-        verbose_name = "4) Ответы сотрудника"
-        verbose_name_plural = '4) Ответы сотрудников'     
+        verbose_name = "Ответы сотрудника" 
+        verbose_name_plural = '5) Посмотреть ответы сотрудников'     
 
 
 class AppointTo(models.Model):
@@ -110,14 +114,16 @@ class AppointTo(models.Model):
     date_finish = models.DateField("Дата окончания опроса", default=datetime.now, blank=True)
  
     def __srt__(self):
-        return  self.users.employee
+        if self.users.user_name.username:
+            return  self.users.user_name.username
 
     class Meta:
-        verbose_name = 'Опросники открытые'
-        verbose_name_plural = 'Опросники открытые'  
+        verbose_name = ' Опросник у сотрудника '
+        verbose_name_plural = '4) Раздать опросники'  
 
 
 # class ShowResults(models.Model):
+
 
 
 # class RightAnswer(models.Model):

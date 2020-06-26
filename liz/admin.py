@@ -3,34 +3,84 @@ from liz.models import User, Employee, Question,  EmployeeAnswer, Questionnaire
 #from liz.models import EmployeeAnswer,  QuestionnaireContent, QuestionnaireResult
 from liz.models import AppointTo
 
+
+admin.site.site_header = "Панель HR-менеджера (Liz)"
+
+
+
+class EmployeeAnswerInline(admin.TabularInline):
+    model = EmployeeAnswer
+    max_num=5
+    extra=0
+
+class AppointToInline(admin.TabularInline):
+    model = AppointTo
+    max_num=4 
+    extra=1
+    
+
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
+    inlines = (AppointToInline,)
     
     @staticmethod
-    def user_name(obj):
-        return obj.Employee.user_name
-
-    list_display = ('user_name', 'user_type', )
+    def correct_name(obj):
+        return obj.user_name
+    list_display = ('correct_name', 'user_type' )
     fields = ('user_name', 'user_type', 'department')
+
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('question', 'image', 'answer_right', 'answer_weight')
+    # @staticmethod
+    # def correct_name(obj):
+    #     queryset = obj.questionnaires                       
+    #     # Questionnaire.objects.filter(title=obj)
+    #     # return obj.questionnaires.title
+    #     # quest = Questionnaire.objects.prefetch_related(Prefetch('questions', queryset=queryset))
+    #     return queryset
+    inlines = (EmployeeAnswerInline, )
+    list_display = ('question','image', 'answer_right', 'answer_weight')
+    list_filter = ('question_type', 'questionnaires')
+    def has_module_permission(self, request):
+        return True
+    
+    def has_add_permission(self, request, obj=None):
+        return True
+
+    def has_change_permission(self, request, obj=None):
+        return True
+
+    def has_delete_permission(self, request, obj=None):
+        return True
 
 
 @admin.register(EmployeeAnswer)
 class EmployeeAnswerAdmin(admin.ModelAdmin):
-    pass
+    
+    @staticmethod
+    def correct_name(self):
+        return self.users.user_name
 
+    list_display = ('correct_name', 'questionnaires', 'questions', 'user_answer', 'is_correct' )
+    fields = ('users', 'questionnaires', 'questions', 'user_answer', 'is_correct')
+    list_filter = ('users', 'questionnaires')
 
 @admin.register(Questionnaire)
 class QuestionnaireAdmin(admin.ModelAdmin):
-    pass
+    inlines = (AppointToInline,)
     
 
 @admin.register(AppointTo)
 class AppointToAdmin(admin.ModelAdmin):
-    list_display = ('users', 'questionnaires', 'date_start', 'date_finish' )
+
+    @staticmethod
+    def correct_name(obj):
+        return obj.users.user_name
+
+    list_display = ('correct_name', 'questionnaires', 'date_start', 'date_finish' )
+    fields = ('users', 'questionnaires', 'date_start', 'date_finish')
+    list_filter = ('users', 'questionnaires','date_finish')
 
 # @admin.register(QuestionnaireContent)
 # class QuestionnaireContentAdmin(admin.ModelAdmin):
