@@ -1,7 +1,7 @@
 from django.contrib import admin
 from liz.models import User, Employee, Question,  EmployeeAnswer, Questionnaire
 #from liz.models import EmployeeAnswer,  QuestionnaireContent, QuestionnaireResult
-from liz.models import AppointTo
+from liz.models import AppointTo, Answer
 
 
 admin.site.site_header = "Панель HR-менеджера (Liz)"
@@ -17,6 +17,15 @@ class AppointToInline(admin.TabularInline):
     model = AppointTo
     max_num=4 
     extra=1
+
+class AnswerInline(admin.TabularInline):
+    model = Answer
+    
+    # var_exist = Answer.objects.only('questions)
+    # if var_exist.variants:
+    #     extra=0
+    # else:
+    extra=4
     
 
 @admin.register(Employee)
@@ -39,7 +48,7 @@ class QuestionAdmin(admin.ModelAdmin):
     #     # return obj.questionnaires.title
     #     # quest = Questionnaire.objects.prefetch_related(Prefetch('questions', queryset=queryset))
     #     return queryset
-    inlines = (EmployeeAnswerInline, )
+    inlines = (AnswerInline, EmployeeAnswerInline, )
     list_display = ('question','image', 'answer_right', 'answer_weight')
     list_filter = ('question_type', 'questionnaires')
     def has_module_permission(self, request):
@@ -54,13 +63,17 @@ class QuestionAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return True
 
+@admin.register(Answer)
+class AnswerAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(EmployeeAnswer)
 class EmployeeAnswerAdmin(admin.ModelAdmin):
     
     @staticmethod
     def correct_name(self):
-        return self.users.user_name
+        return self.users
+        # .user_name
 
     list_display = ('correct_name', 'questionnaires', 'questions', 'user_answer', 'is_correct' )
     fields = ('users', 'questionnaires', 'questions', 'user_answer', 'is_correct')
@@ -69,7 +82,7 @@ class EmployeeAnswerAdmin(admin.ModelAdmin):
 @admin.register(Questionnaire)
 class QuestionnaireAdmin(admin.ModelAdmin):
     inlines = (AppointToInline,)
-    
+    list_filter = ('title', 'users', 'questions')
 
 @admin.register(AppointTo)
 class AppointToAdmin(admin.ModelAdmin):

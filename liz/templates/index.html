@@ -24,9 +24,29 @@ crossorigin="anonymous">
     <img src='{% static "kniga_derevo_5291.jpg" %}',  alt="Книга с деревом" width="300" height="200"> 
     
     <p>Ответь на вопросы</p>
+
         {% for quest in quests %}
-           <br> {{ quest.question }} {{ quest.image }}
+        <form method="post" action="input">
+            {% csrf_token %}
+            <p><b>{{ quest.question }}  {{ quest.image }}</b></p>
+
+
+            {% for variant in variants %}
+                {% if variant.questions.question == quest.question %}
+                    {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer %}     
+                <input type="hidden"  name="question_id" value="{{ quest.id }}">        
+                <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}">{{ variant.variant }}<br>
+                {% endif %} 
+                
+            {% endfor %}
+            
+                <input type="submit" value="Отправить">
+                
+        </form>
+
         {% endfor %}
+        
+
 {% else %}  
     <p>Вам нужно <a href='register'>зарегистрироваться</a> 
         или <a href='login'>войти</a></p>  

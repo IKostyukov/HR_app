@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from liz.views import index, RegisterView, CreateUserProfile #, login, logout
+from liz.views import index, RegisterView, CreateUserProfile, answer 
+ #, login, logout
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy 
 from django.conf.urls.static import static
@@ -32,7 +33,8 @@ urlpatterns = [
         template_name='register.html',  
 		success_url=reverse_lazy('profile-create')  
     ), name='register'),  
-    path('profile-create/', CreateUserProfile.as_view(), name='profile-create'),   
+    path('profile-create/', CreateUserProfile.as_view(), name='profile-create'), 
+    path('input', answer, name='good')  
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 from datetime import datetime
 # from django.contrib.postgres.fields import JSONField
 
-# ANSWER_TYPE = [
-#     ('One', 'Один правильный ответ'),
-#     ('Multi', 'Несколько правильных ответов'),
-# ]
+ANSWER_IS_TRUE = [
+    ('One', 'Один правильный ответ'),
+    ('Multi', 'Несколько правильных ответов'),
+]
 
 USER_TYPE = [
         ('MG', 'Менеджер'),
@@ -14,14 +14,17 @@ USER_TYPE = [
         ]
 
 QUESTIONE_TYPE = [
-        ('RADIO',  'c одним вариантом ответа'),
-        ('CHECKBOXES', ' с несколькими вариантами'),
+    ('One', 'Один правильный ответ'),
+    ('Multi', 'Несколько правильных ответов'),
     ]
 
 class Employee(models.Model):
     MANAGER = 'MG'
     COWORKER = 'CW'    
-    user_name = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE, related_name='employee')
+    user_name = models.OneToOneField(User, 
+    null=True, blank=True, 
+    on_delete=models.CASCADE, 
+    related_name='employee')
     department =  models.CharField(max_length=100)
     user_type = models.CharField(
         max_length=10, 
@@ -42,9 +45,10 @@ class Question(models.Model):
     question = models.CharField("Вопрос", max_length=128, null=True)
     image = models.ImageField(upload_to='photos/%Y/%m/%d', null=True, blank=True)
     question_type = models.CharField(max_length=10, 
-    choices=(QUESTIONE_TYPE), blank=True, default='RADIO', verbose_name='тип вопросов')
-    answer_right = models.CharField(max_length=128, blank=True, null=True)
-    answer_weight = models.SmallIntegerField("Баллы", default=1)
+    choices=(QUESTIONE_TYPE), blank=True, default='One', verbose_name='тип вопросов')
+    answer_right = models.CharField("правильные ответы", max_length=128, blank=True, null=True)
+    answer_all_variants = models.CharField("варианты ответов (в том числе все правильные)", max_length=128, blank=True, null=True)
+    answer_weight = models.SmallIntegerField("баллы", default=0)
 
     def __str__(self):
         return self.question 
@@ -53,7 +57,19 @@ class Question(models.Model):
         verbose_name = "Вопрос"
         verbose_name_plural = '2) Вопросы'
 
+class Answer(models.Model):
+    questions = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='вопросы')
+    variant = models.CharField("варианты ответа в опроснике", max_length=128,  null=True)
+    is_right_variant = models.BooleanField("укажите правильные варианты")
+    answer_weight = models.SmallIntegerField("баллы", default=0)
 
+    def __str__(self):
+        return self.variant 
+    
+    class Meta:
+        verbose_name = "Ответ"
+        verbose_name_plural = "6) Ответы"
+    
 class Questionnaire(models.Model):    
     title = models.CharField("Название опросника", max_length=25,  null=True, blank=True)
     description = models.CharField("Описание", max_length=256, null=True, blank=True)
@@ -87,8 +103,8 @@ class EmployeeAnswer(models.Model):
     users = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.CASCADE, verbose_name='сотрудники')
     questionnaires = models.ForeignKey(Questionnaire,  null=True, blank=True, on_delete=models.CASCADE, verbose_name='вопросник')
     questions = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='вопросы')
-    user_answer = models.CharField("Ответ на вопрос", max_length=256,  null=True, blank=True,)
-    is_correct = models.BooleanField()
+    user_answer = models.CharField("Ответ на вопрос", max_length=256,  null=True,)
+    is_correct = models.BooleanField(default=False)
     
     def __str__(self):
         if self.users.user_name.username:
