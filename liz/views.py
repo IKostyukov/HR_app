@@ -5,12 +5,13 @@ from django.contrib import auth
 from django.http.response import HttpResponseRedirect
 from django.urls import reverse_lazy
 
-from django.views.generic import FormView
-# , View 
-from django.contrib.auth.forms import UserCreationForm  
+from django.views.generic import FormView, DetailView, TemplateView 
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate  
-from liz.forms import EmployeeCreationForm  
-from liz.models import Employee, Question, Answer, EmployeeAnswer
+from liz.forms import EmployeeCreationForm, QuestionnaireForm   
+from liz.models import Employee, Question, Answer, Questionnaire
+from liz.models import AppointTo,  EmployeeAnswer
+from datetime import datetime
 
 class RegisterView(FormView):  
   
@@ -48,37 +49,137 @@ def index(request):
         context['usertype'] = Employee.objects.get(user_name=request.user).user_type 
         quests = Question.objects.all()
         variants = Answer.objects.all() 
-        context['variants'] = list(variants)
-        context['quests'] = list(quests)
+        questionnaires = Questionnaire.objects.all()
         
+        appoint = AppointTo.objects.filter(date_finish__gt=datetime.today().date(), users=request.user)
+        context['appoint'] = appoint
+        context['quests'] = quests
+        context['variants'] = variants
+        context['questionnaires'] = questionnaires
     return render(request, 'index.html', context) 
 
-# class UserAnswer(View):
-#     model = EmployeeAnswer
+
+
+class ShowQuestionnaires(TemplateView):
+    
+    template_name = 'index.html'
+
+    def get_context_data(self,  **kwargs):
+        context = super().get_context_data(**kwargs)
+        appoint = AppointTo.objects.all()
+        context['appoint'] = appoint
+        context['username'] = self.request.user.username
+        context['questionnaires'] = Questionnaire.objects.all()
+        return context
+    
+
+class DetailQuestionnaire(DetailView):
+
+    # queryset = Questionnaire.objects.filter(country="Russia")
+    # form_class = QuestionnaireForm
+    # context_object_name = 'questionnaire'
+    template_name = 'questlist.html'
+    model = Questionnaire
+    form_class = QuestionnaireForm # не рабтает!
+    pk_url_kwarg = 'pk'
+    query_pk_and_slug = True
+    slug_url_kwarg = 'id_'
+    slug_field = 'id'
+
+    def get_context_data(self,  *arg, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context["now"] = timezone.now()   !!!! на будущее !!!!
+        # if request.user.is_authenticated:  
+            # context['username'] = request.user.username
+            # context['usertype'] = Employee.objects.get(user_name=request.user).user_type 
+        quests = Question.objects.all()
+        variants = Answer.objects.all() 
+        questionnaires = Questionnaire.objects.all()
+        context['quests'] = quests
+        context['variants'] = variants
+        context['questionnaires'] = questionnaires
+        return context
+
+
+def details(request, id_):
+    context = {}
+    if request.user.is_authenticated:  
+        context['username'] = request.user.username
+        context['usertype'] = Employee.objects.get(user_name=request.user).user_type 
+        quests = Question.objects.all()
+        variants = Answer.objects.all() 
+        questionnaires = Questionnaire.objects.all()
+        if id_.isdigit() :
+            context['id_'] = int(id_)
+        context['quests'] = quests
+        context['variants'] = variants
+        context['questionnaires'] = questionnaires
+    
+    return render(request, 'questionnaire.html', context) 
 
 def answer(request):
     if request.method == 'POST':
-        user_id = request.user.id
-        user =  Employee.objects.get(user_name=request.user)
         question_id = request.POST["question_id"]
+        questionnaire_id = request.POST["questionnaire_id"]
+        right_variants = []
+        variants = Answer.objects.filter(questions_id=question_id).filter(is_right_variant=True)
+        for ok in variants:
+            right_variants.append(ok.variant)
+        user_id = request.user.id
+        right_id = Employee.objects.get(user_name_id=user_id).id
+        user_name =  Employee.objects.get(user_name=request.user)
+        questionnaire = Questionnaire.objects.filter(questions__id=question_id) #тест на получение
+
+        #test from
+        for qus in questionnaire: 
+            print(qus.id)
+        ggg = Question.objects.all()
+        print(ggg)  
+
+        for g in ggg.filter(questionnaires=questionnaire_id): 
+            s = g  
+            print(s)
+        # test till
+
         if 'answer1' in request.POST:
-            answer1 = request.POST['answer1']
+            answer = request.POST['answer1']
+            employee_answer = EmployeeAnswer(
+                users=user_name, 
+                questions_id=question_id ,
+                questionnaires_id=questionnaire_id, 
+                user_answer=answer)
+            if answer in right_variants:
+                employee_answer.is_correct=True 
+                employee_answer.save()
+            else:
+                employee_answer.save()
         if 'answer2' in request.POST:
-            answer2 = request.POST['answer2']
+            answer = request.POST['answer2']
+            employee_answer = EmployeeAnswer(users=user_name, questions_id=question_id, questionnaires_id=questionnaire_id , user_answer=answer)
+            if answer in right_variants:
+                employee_answer.is_correct=True 
+                employee_answer.save()
+            else:
+                employee_answer.save()
         if 'answer3' in request.POST:
-            answer3 = request.POST['answer3']
+            answer = request.POST['answer3']
+            employee_answer = EmployeeAnswer(users=user_name, questions_id=question_id, questionnaires_id=questionnaire_id , user_answer=answer)
+            if answer in right_variants:
+                employee_answer.is_correct=True 
+                employee_answer.save()
+            else:
+                employee_answer.save()
         if 'answer4'in request.POST:
-            answer4 = request.POST['answer4']
-    right_id = Employee.objects.get(user_name_id=user_id).id
-    employee_answer = EmployeeAnswer.objects.get(questions_id=question_id)
-    employee_answer.users = user
-    # employee_answer.questionnaires='Общий'
-    # employee_answer = EmployeeAnswer(questions_id=question_id, user_answer=answer1)
-
-    # employee_answer.user_answer = answer
-    employee_answer.save()
-
-    return redirect('index')
+            answer = request.POST['answer4']
+            employee_answer = EmployeeAnswer(users=user_name, questions_id=question_id, questionnaires_id=questionnaire_id , user_answer=answer)
+            if answer in right_variants:
+                employee_answer.is_correct=True 
+                employee_answer.save()
+            else:
+                employee_answer.save()
+        # return HttpResponseRedirect(reverse_lazy('details'))
+        # return redirect('index')
+        return redirect('details', id_=questionnaire_id)
 
 # def login(request):  
 #     if request.method == 'POST':  

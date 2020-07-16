@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>INPUT</title>
+ </head>
+ <body>
+     
+  <h3>GOOD!</h3>
+
+  {% for questionnaire in questionnaires %}
+        {% if id_ == questionnaire.id %}
+            <h3>{{  questionnaire }}</h3>
+            {% for quest in quests %}
+                {% for q in quest.questionnaires.all %} 
+                    {% if  q.id  == questionnaire.id %}
+                
+                    <form method="post" action="inp">
+                        {% csrf_token %}
+                        <p><b>{{ quest.id }} {{ quest.question }}  {{ quest.image }}</b></p>
+
+                            {% for variant in variants %}
+                                {% if variant.questions.question == quest.question  %}
+                                    {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer %}
+                                    
+                                    <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}">{{ variant.variant }}<br>
+                                    <input type="hidden"  name="question_id" value="{{ quest.id }}">
+                                    <input type="hidden"  name="questionnaire_id" value="{{ questionnaire.id }}">        
+                                
+                            {% endif %}                      
+                            {% endfor %}            
+                            <input type="submit" value="Отправить"><br>
+                    </form>
+                    {% endif %}
+                {% endfor %}    
+            {% endfor %}
+        {% endif %}
+    {% endfor %} 

@@ -60,7 +60,7 @@ class Question(models.Model):
 class Answer(models.Model):
     questions = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='вопросы')
     variant = models.CharField("варианты ответа в опроснике", max_length=128,  null=True)
-    is_right_variant = models.BooleanField("укажите правильные варианты")
+    is_right_variant = models.BooleanField("укажите правильный ли это вариант?")
     answer_weight = models.SmallIntegerField("баллы", default=0)
 
     def __str__(self):
@@ -81,16 +81,11 @@ class Questionnaire(models.Model):
     users = models.ManyToManyField(
         Employee,
         through="AppointTo", 
+        related_name="user", 
         verbose_name="Открыто для отрудников", 
         blank=True)
     
-    @property
-    def isOpen(self):
-        if self.date_finish >= datetime.today().date(): 
-            return True
-        else:
-            return False
-        
+    
     def __str__(self):
         return self.title
 
@@ -101,22 +96,22 @@ class Questionnaire(models.Model):
 
 class EmployeeAnswer(models.Model):
     users = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.CASCADE, verbose_name='сотрудники')
-    questionnaires = models.ForeignKey(Questionnaire,  null=True, blank=True, on_delete=models.CASCADE, verbose_name='вопросник')
-    questions = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='вопросы')
-    user_answer = models.CharField("Ответ на вопрос", max_length=256,  null=True,)
-    is_correct = models.BooleanField(default=False)
+    questionnaires = models.ForeignKey(Questionnaire,  null=True, blank=True, on_delete=models.CASCADE, verbose_name='опросник')
+    questions = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='вопрос')
+    user_answer = models.CharField("Ответ", max_length=256,  null=True,)
+    is_correct = models.BooleanField(default=False, verbose_name='верно')
     
     def __str__(self):
         if self.users.user_name.username:
             return self.users.user_name.username
 
     class Meta:
-        verbose_name = "Ответы сотрудника" 
+        verbose_name = "Ответы сотрудников" 
         verbose_name_plural = '5) Посмотреть ответы сотрудников'     
 
 
 class AppointTo(models.Model):
-    users = models. ForeignKey(
+    users = models.ForeignKey(
         Employee, 
         on_delete=models.CASCADE, 
         blank=True,
@@ -125,10 +120,21 @@ class AppointTo(models.Model):
         Questionnaire, 
         on_delete=models.CASCADE, 
         blank=True,
+        related_name="appoint",  
         verbose_name='опросник' )
     date_start = models.DateField("Дата начала опроса", default=datetime.now, blank=True)
     date_finish = models.DateField("Дата окончания опроса", default=datetime.now, blank=True)
  
+    @property
+    def isOpen(self):
+        # finish = AppointTo.objects.filter(date_finish__gt=datetime.today().date(), questionnaires_id=self.id)
+        # for xxx in finish:
+        #     print(xxx.date_finish) 
+        if self.date_finish >= datetime.today().date(): 
+            return True
+        else:
+            return False
+        
     def __srt__(self):
         if self.users.user_name.username:
             return  self.users.user_name.username

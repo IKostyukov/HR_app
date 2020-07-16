@@ -14,6 +14,8 @@ crossorigin="anonymous">
 <h3>стартовая страница</h3>
 {% if username %}  
     <h1>Привет, {{ username }}!</h1> 
+    {% lorem %}<br>
+    
     <p>Тут ты можешь <a href="logout">выйти</a>.</p> 
 
     {% if user_type  %}
@@ -23,29 +25,42 @@ crossorigin="anonymous">
     {% load static %}
     <img src='{% static "kniga_derevo_5291.jpg" %}',  alt="Книга с деревом" width="300" height="200"> 
     
-    <p>Ответь на вопросы</p>
-
-        {% for quest in quests %}
-        <form method="post" action="input">
-            {% csrf_token %}
-            <p><b>{{ quest.question }}  {{ quest.image }}</b></p>
-
-
-            {% for variant in variants %}
-                {% if variant.questions.question == quest.question %}
-                    {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer %}     
-                <input type="hidden"  name="question_id" value="{{ quest.id }}">        
-                <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}">{{ variant.variant }}<br>
-                {% endif %} 
-                
-            {% endfor %}
-            
-                <input type="submit" value="Отправить">
-                
-        </form>
-
-        {% endfor %}
+    <p>Вам доступны следующие опросники</p>
         
+    {% for questionnaire in questionnaires %}
+        {% for ap in questionnaire.appoint.all %}
+        {% if ap.isOpen %}
+        <h2>
+            <a href="questionnaire/{{ questionnaire.id }}">{{  questionnaire }}</a>
+        </h2> 
+        {{ ap.date_finish }} &nbsp {{ ap.date_start }}
+            {% for quest in quests %}
+                {% for q in quest.questionnaires.all %} 
+                    {% if  q.id  == questionnaire.id %}
+                    <form method="post" action="input">
+                        {% csrf_token %}
+                        <p><b>{{ quest.id }} {{ quest.question }}  {{ quest.image }}</b></p>
+                        {% for variant in variants %}
+                            {% if variant.questions.question == quest.question  %}
+                                {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer %}
+                                
+                                <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}">{{ variant.variant }}<br>
+                                <input type="hidden"  name="question_id" value="{{ quest.id }}">
+                                <input type="hidden"  name="questionnaire_id" value="{{ questionnaire.id }}">        
+                            
+                            {% endif %}                      
+                        {% endfor %}            
+                        <input type="submit" value="Отправить">
+                    </form>
+                    {% endif %}
+                {% endfor %}    
+            {% endfor %} 
+        {% endif %}  
+        {% endfor %} 
+    {% endfor %} 
+
+    
+
 
 {% else %}  
     <p>Вам нужно <a href='register'>зарегистрироваться</a> 
