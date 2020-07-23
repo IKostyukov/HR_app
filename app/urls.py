@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from liz.views import RegisterView, CreateUserProfile, ShowQuestionnaires,  answer, index, details
+from liz.views import RegisterView, CreateUserProfile, ShowQuestionnaires,  answer
+# , index, details
 from liz.views import DetailQuestionnaire
  #, login, logout
 from django.contrib.auth.views import LoginView, LogoutView

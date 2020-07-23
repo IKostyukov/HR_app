@@ -16,7 +16,7 @@ class EmployeeAnswerInline(admin.TabularInline):
 class AppointToInline(admin.TabularInline):
     model = AppointTo
     max_num=4 
-    extra=1
+    extra=0
 
 class AnswerInline(admin.TabularInline):
     model = Answer

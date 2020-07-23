@@ -37,13 +37,13 @@ class Employee(models.Model):
             return self.user_name.username
 
     class Meta:
-        verbose_name = "Сотрудник"
-        verbose_name_plural = "1) Сотрудники"
+        verbose_name = "сотрудник"
+        verbose_name_plural = "№1: сотрудники"
 
 
 class Question(models.Model):
     question = models.CharField("Вопрос", max_length=128, null=True)
-    image = models.ImageField(upload_to='photos/%Y/%m/%d', null=True, blank=True)
+    image = models.ImageField(upload_to='photos/%Y/%m/%d', null=True, blank=True) 
     question_type = models.CharField(max_length=10, 
     choices=(QUESTIONE_TYPE), blank=True, default='One', verbose_name='тип вопросов')
     answer_right = models.CharField("правильные ответы", max_length=128, blank=True, null=True)
@@ -54,11 +54,11 @@ class Question(models.Model):
         return self.question 
     
     class Meta:
-        verbose_name = "Вопрос"
-        verbose_name_plural = '2) Вопросы'
+        verbose_name = "вопрос"
+        verbose_name_plural = '№2: вопросы'
 
 class Answer(models.Model):
-    questions = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='вопросы')
+    questions = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers', verbose_name='вопросы')
     variant = models.CharField("варианты ответа в опроснике", max_length=128,  null=True)
     is_right_variant = models.BooleanField("укажите правильный ли это вариант?")
     answer_weight = models.SmallIntegerField("баллы", default=0)
@@ -67,8 +67,8 @@ class Answer(models.Model):
         return self.variant 
     
     class Meta:
-        verbose_name = "Ответ"
-        verbose_name_plural = "6) Ответы"
+        verbose_name = "вариант для ответа"
+        verbose_name_plural = "№6: варианты для ответов"
     
 class Questionnaire(models.Model):    
     title = models.CharField("Название опросника", max_length=25,  null=True, blank=True)
@@ -82,7 +82,7 @@ class Questionnaire(models.Model):
         Employee,
         through="AppointTo", 
         related_name="user", 
-        verbose_name="Открыто для отрудников", 
+        verbose_name="Открытые для отрудников", 
         blank=True)
     
     
@@ -90,15 +90,15 @@ class Questionnaire(models.Model):
         return self.title
 
     class Meta:
-        verbose_name = "Опросник"
-        verbose_name_plural = '3) Опросники'
+        verbose_name = "опросник"
+        verbose_name_plural = '№3: сформировать опросник'
 
 
 class EmployeeAnswer(models.Model):
     users = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.CASCADE, verbose_name='сотрудники')
     questionnaires = models.ForeignKey(Questionnaire,  null=True, blank=True, on_delete=models.CASCADE, verbose_name='опросник')
-    questions = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='вопрос')
-    user_answer = models.CharField("Ответ", max_length=256,  null=True,)
+    questions = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='employee_answers', verbose_name='вопрос')
+    user_answer = models.CharField("Ответ", max_length=256,  null=True, )
     is_correct = models.BooleanField(default=False, verbose_name='верно')
     
     def __str__(self):
@@ -106,8 +106,8 @@ class EmployeeAnswer(models.Model):
             return self.users.user_name.username
 
     class Meta:
-        verbose_name = "Ответы сотрудников" 
-        verbose_name_plural = '5) Посмотреть ответы сотрудников'     
+        verbose_name = "ответы сотрудников" 
+        verbose_name_plural = '№5: посмотреть ответы сотрудников'     
 
 
 class AppointTo(models.Model):
@@ -140,8 +140,8 @@ class AppointTo(models.Model):
             return  self.users.user_name.username
 
     class Meta:
-        verbose_name = ' Опросник у сотрудника '
-        verbose_name_plural = '4) Раздать опросники'  
+        verbose_name = ' опросник  сотруднику '
+        verbose_name_plural = '№4: назначить опросник'  
 
 
 # class ShowResults(models.Model):

@@ -1,37 +1,48 @@
-<!DOCTYPE HTML>
-<html>
- <head>
-  <meta charset="utf-8">
-  <title>Questionnaire</title>
- </head>
- <body>
-{% for questionnaire in questionnaires %}
-    {% if object.id == questionnaire.id %}
-        <h3><pre>    {{ questionnaire|upper }}</pre></h3>
-            <p><pre>  Описание: {{ object.description|lower }}</pre></p>
-  
-        {% for quest in quests %}
-            {% for q in quest.questionnaires.all %} 
-                {% if  q.id  == questionnaire.id %}    
-                    <form method="post" action="details">
-                    {% csrf_token %}
-                    <p><b>&nbsp {{ quest.question }}</b> &nbsp id:{{ quest.id }} <br>
-                        &nbsp {{ quest.image }}</p>              
-                    {% for variant in variants %}
-                        {% if variant.questions.question == quest.question  %}
-                            {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer %}
-                            <input type="checkbox" name='{{ answer }}' value="{{ variant.variant }}">{{ variant.variant }}<br>
-                            <input type="hidden"  name="question_id" value="{{ quest.id }}">
-                            <input type="hidden"  name="questionnaire_id" value="{{ questionnaire.id }}">        
-                        {% endif %}                      
+{% extends 'index.html' %}
+
+{% block quest_list %}
+<big><pre>&nbsp Или перейти <a href="../">на главную</a></pre></big>
+
+<h3>&nbsp&nbsp&nbsp{{ object|upper }}</h3>
+        <p><pre>   описание опросника: {{ object.description|lower }}</pre></p>
+    
+    {% for quest in quests %}
+        
+    <form method="post" action="details">
+                {% csrf_token %}
+                <div><br>
+                    <b>&nbsp ВОПРОС &nbsp {{ quest.question }}</b> &nbsp id:{{ quest.id }}<br>
+                    <br><img src="../../media/{{ quest.image }} " alt="{{quest.image}}" width="300" height="200">
+                    {% if quest.image.name  != ''  %} 
+                    <img src="{{ quest.image.url }}" alt="ой-ой" width="300" height="200"><br><br>
+                    {% else %} #
+                    {% endif %}
+                </div> 
+        
+                <div>{% for variant in variants %}
+                     {% if variant.questions_id == quest.id %}
+
+                        {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer  %}
+                        <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}">&nbsp{{ variant }}<br>
+                        <input type="hidden" name="question_id" value="{{ quest.id }}">
+                        <input type="hidden" name="questionnaire_id" value="{{ object.id }}">        
+                        
+
+                    {% endif %}                    
                     {% endfor %}             
-                        <input type="submit" value="Отправить"><br>
-                    </form>
-                {% endif %}
-            {% endfor %}    
-        {% endfor %}
-    {% endif %}
-{% empty %}
-    Sorry, no questions in this list.
-{% endfor %} 
- </body>
+                        <input type="submit" value="Отправить">
+                </div>
+                
+                </form>
+               &nbsp&nbsp___________ <br>
+                &nbsp ваш ответ:
+                {% for employee_answer in  quest.employee_answers.all %}
+                    {% if employee_answer.users_id == right_id %}
+                        "{{ employee_answer.user_answer }}"
+                    {% endif %}
+                {% endfor %}
+                
+            
+    {% endfor %}
+
+{% endblock %}

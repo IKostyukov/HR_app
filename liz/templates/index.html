@@ -2,76 +2,71 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Стартовая страница</title>
+    <title>ДОПРОСИКИ Liz</title>
     <link 
 href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 rel="stylesheet"
 integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
 crossorigin="anonymous"> 
+
 </head>
 
 <body>
-<h3>стартовая страница</h3>
-{% if username %}  
-    <h1>Привет, {{ username }}!</h1> 
-    {% lorem %}<br>
+
+    <div class="content-container">
+        <div class="row">
+            <div class="col-md-8">  
+            <h3>&nbsp допросики  <big> Liz</big>&reg <br>
+            &nbsp <small><small><smal>больно не будет!</small></small></h3>
     
-    <p>Тут ты можешь <a href="logout">выйти</a>.</p> 
+            {% load static %}
+                <img src='{% static "kniga_derevo_5291.jpg" %}',  alt="Книга с деревом" width="300" height="200"> 
+            
+            {% if username %}  
+                <h4>Привет, {{ username|title }}!</h4> 
+                {% lorem %}<br>
+                      
+                &nbsp Tы всегда сможешь <a href="logout">выйти</a>
 
-    {% if user_type  %}
-        <p>(this page is only for {{ usertype }})</p> 
-    {% endif %} 
+                {% if user_type  %}
+                    <p>(this page is only for {{ usertype }})</p> 
+                {% endif %} 
+            </div>
+        </div>
+    </div>  
 
-    {% load static %}
-    <img src='{% static "kniga_derevo_5291.jpg" %}',  alt="Книга с деревом" width="300" height="200"> 
+    <div class="content-container">
+        <div class="row">
+            <div class="col-md-8"> 
+            {% else %}  
+            <p>Вам нужно <a href='register'>зарегистрироваться</a> 
+                или <a href='login'>войти</a></p>  
+            {% endif %} 
+            </div>
+        </div>
+    </div>          
     
-    <p>Вам доступны следующие опросники</p>
-        
-    {% for questionnaire in questionnaires %}
-        {% for ap in questionnaire.appoint.all %}
-        {% if ap.isOpen %}
-        <h2>
-            <a href="questionnaire/{{ questionnaire.id }}">{{  questionnaire }}</a>
-        </h2> 
-        {{ ap.date_finish }} &nbsp {{ ap.date_start }}
-            {% for quest in quests %}
-                {% for q in quest.questionnaires.all %} 
-                    {% if  q.id  == questionnaire.id %}
-                    <form method="post" action="input">
-                        {% csrf_token %}
-                        <p><b>{{ quest.id }} {{ quest.question }}  {{ quest.image }}</b></p>
-                        {% for variant in variants %}
-                            {% if variant.questions.question == quest.question  %}
-                                {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer %}
-                                
-                                <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}">{{ variant.variant }}<br>
-                                <input type="hidden"  name="question_id" value="{{ quest.id }}">
-                                <input type="hidden"  name="questionnaire_id" value="{{ questionnaire.id }}">        
-                            
-                            {% endif %}                      
-                        {% endfor %}            
-                        <input type="submit" value="Отправить">
-                    </form>
-                    {% endif %}
-                {% endfor %}    
-            {% endfor %} 
-        {% endif %}  
-        {% endfor %} 
-    {% endfor %} 
+    <div class="content-container">
+        <div class="row">
+            <div class="col-md-8">       
+            {% for questionnaire in questionnaires %}
+                {% for ap in questionnaire.appoint.all %}
+                {% if ap.isOpen %}
+                <h4><a href="questionnaire/{{ questionnaire.id }}"> {{ questionnaire|title }}</a><small> |available</small></h4> 
+                <pre> from: {{ ap.date_start }} - to:{{ ap.date_finish }}</pre>
 
+                {% endif %}    
+                {% endfor %} 
+            {% endfor %}
+            </div>
+        </div>
+    </div>  
     
-
-
-{% else %}  
-    <p>Вам нужно <a href='register'>зарегистрироваться</a> 
-        или <a href='login'>войти</a></p>  
-{% endif %} 
-
-
-
-
-
-
+    <div class="list-container">
+        {% block quest_list %}
+        {% endblock %}
+    </div>
+   
 </body>
 
 </html>
