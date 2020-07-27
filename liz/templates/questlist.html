@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 
 {% block quest_list %}
-<big><pre>&nbsp Или перейти <a href="../">на главную</a></pre></big>
+<big><pre>&nbsp ...или перейти <a href="../">на главную</a></pre></big>
 
 <h3>&nbsp&nbsp&nbsp{{ object|upper }}</h3>
         <p><pre>   описание опросника: {{ object.description|lower }}</pre></p>
@@ -9,40 +9,68 @@
     {% for quest in quests %}
         
     <form method="post" action="details">
-                {% csrf_token %}
+            {% csrf_token %}
+
+            {% with counter_value=forloop.counter|stringformat:"s" %}
+            {% with my_label="ВОПРОС "|add:counter_value %}
+
                 <div><br>
-                    <b>&nbsp ВОПРОС &nbsp {{ quest.question }}</b> &nbsp id:{{ quest.id }}<br>
-                    <br><img src="../../media/{{ quest.image }} " alt="{{quest.image}}" width="300" height="200">
+                    <b>&nbsp {{ my_label }} &nbsp {{ quest.question }}</b> &nbsp id:{{ quest.id }}<br>
                     {% if quest.image.name  != ''  %} 
                     <img src="{{ quest.image.url }}" alt="ой-ой" width="300" height="200"><br><br>
                     {% else %} #
                     {% endif %}
                 </div> 
         
-                <div>{% for variant in variants %}
-                     {% if variant.questions_id == quest.id %}
 
-                        {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer  %}
-                        <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}">&nbsp{{ variant }}<br>
-                        <input type="hidden" name="question_id" value="{{ quest.id }}">
-                        <input type="hidden" name="questionnaire_id" value="{{ object.id }}">        
+                    <div>{% for variant in variants %}
+                        {% if variant.questions_id == quest.id %}
+                            {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer  %}
+
+                            
+                            
                         
+                            
 
-                    {% endif %}                    
-                    {% endfor %}             
-                        <input type="submit" value="Отправить">
-                </div>
+                                
+
+                                                            
+                                
+                                
+
+                                
+                                <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}"  > &nbsp{{ variant }}<br>
+                                
+
+                                <input type="hidden" name="question_id" value="{{ quest.id }}">
+                                <input type="hidden" name="questionnaire_id" value="{{ object.id }}">        
+                                
+                                
+                                
+                            
+
+                        {% endif %}                    
+                        {% endfor %}
+                            
+                           <input type="submit" value="Отправить">
+                    </div>
+               
                 
                 </form>
                &nbsp&nbsp___________ <br>
-                &nbsp ваш ответ:
+                &nbsp ваш ответ: <br>
                 {% for employee_answer in  quest.employee_answers.all %}
-                    {% if employee_answer.users_id == right_id %}
-                        "{{ employee_answer.user_answer }}"
+                    {% if employee_answer.users_id == right_id  %}
+                        &nbsp "{{ employee_answer.user_answer }}"  
+                    {% if employee_answer.is_correct %} -Ok-  {{total_weight}} <br>
+                    {% endif %}
                     {% endif %}
                 {% endfor %}
+
+
                 
-            
+            {% endwith %}
+            {% endwith %}
     {% endfor %}
 
 {% endblock %}

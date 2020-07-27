@@ -32,6 +32,7 @@ urlpatterns = [
     path('', ShowQuestionnaires.as_view(), name='index'),
     path('questionnaire/details', answer, name='good'),
     path('questionnaire/inp', answer, name='good'),
+    path('questionnaire/login', LoginView.as_view(), name='login-again'),
     path('questionnaire/<id_>', DetailQuestionnaire.as_view(), name='details'),
     # path('questionnaire/<id_>', details, name='details'),
     path('login/', LoginView.as_view(), name='login'),  

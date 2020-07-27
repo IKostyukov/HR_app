@@ -74,6 +74,9 @@ class ShowQuestionnaires(TemplateView):
                 users__user_name_id=user_id,
                 # appoint__date_finish__gt=datetime.today().date()
                 )
+          
+            context["not_available"] = " Вам не назначен ни один ДОПРОСИК или ваше время истекло "
+            context["is_available"] = " Ваши ДОПРОСИКИ: "
             context['questionnaires'] = questionnaires 
             context['username'] = self.request.user.username
             
@@ -95,25 +98,40 @@ class DetailQuestionnaire(DetailView):
     # query_pk_and_slug = True
 
     def get_context_data(self, **kwargs):
-        if self.request.user.is_authenticated:  
-            context = super().get_context_data(**kwargs)
-            # context["now"] = timezone.now()   !!!! на будущее !!!!
-            # if request.user.is_authenticated:  
-                # context['username'] = request.user.username
-                # context['usertype'] = Employee.objects.get(user_name=request.user).user_type 
-            user_id = self.request.user.id
-            quests = Question.objects.filter(questionnaires__id=self.object.id)        
-            variants = Answer.objects.filter(questions__questionnaires__id=self.object.id)         
+        if self.request.user.is_authenticated:
+            user_id = self.request.user.id 
             right_id = Employee.objects.get(user_name_id=user_id).id
-            # date_finish = self.request.POST.date_finish !!! приходит с index.html не POST запрс
-            context['username'] = self.request.user.username
-            context['right_id'] = right_id
-            context['quests'] = quests
-            context['variants'] = variants
-            # context['date_finish'] = date_finish
-            
-            return context
+            appoint = AppointTo.objects.get(users_id=right_id, questionnaires_id=self.object.id) 
+            if appoint.isOpen:
+                context = super().get_context_data(**kwargs)
+                # context["now"] = timezone.now()   !!!! на будущее !!!!
+                # if request.user.is_authenticated:  
+                    # context['username'] = request.user.username
+                    # context['usertype'] = Employee.objects.get(user_name=request.user).user_type 
+                
+                quests = Question.objects.filter(questionnaires__id=self.object.id)        
+                variants = Answer.objects.filter(questions__questionnaires__id=self.object.id)         
+                right_variants = []
+                for var in variants:
+                    ok = var.is_right_variant
+                    if ok is True:
+                        right_variants.append(var)
 
+                context['right_variants'] = right_variants
+
+
+                # date_finish = self.request.POST.date_finish !!! приходит с index.html не POST запрс
+                context['username'] = self.request.user.username
+                context['right_id'] = right_id
+                context['quests'] = quests
+                context['variants'] = variants
+                # context['date_finish'] = date_finish
+                return context
+            else:
+                redirect('http://127.0.0.1:8000')
+
+        else:
+            return  render(self.request, 'index.html', context)
 
 # def details(request, id_):
 #     context = {}

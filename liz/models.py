@@ -48,7 +48,7 @@ class Question(models.Model):
     choices=(QUESTIONE_TYPE), blank=True, default='One', verbose_name='тип вопросов')
     answer_right = models.CharField("правильные ответы", max_length=128, blank=True, null=True)
     answer_all_variants = models.CharField("варианты ответов (в том числе все правильные)", max_length=128, blank=True, null=True)
-    answer_weight = models.SmallIntegerField("баллы", default=0)
+    answer_weight = models.SmallIntegerField("ПУНКТЫ", default=0)
 
     def __str__(self):
         return self.question 
@@ -69,6 +69,9 @@ class Answer(models.Model):
     class Meta:
         verbose_name = "вариант для ответа"
         verbose_name_plural = "№6: варианты для ответов"
+
+    
+
     
 class Questionnaire(models.Model):    
     title = models.CharField("Название опросника", max_length=25,  null=True, blank=True)
@@ -109,6 +112,11 @@ class EmployeeAnswer(models.Model):
         verbose_name = "ответы сотрудников" 
         verbose_name_plural = '№5: посмотреть ответы сотрудников'     
 
+    # def counter_weight(self):
+    #     total_weight = []
+    #     answer = Answer.objects.filret(questions_id=self.questions_id)
+    #     if self.is_correct:
+    #     total_weight += 
 
 class AppointTo(models.Model):
     users = models.ForeignKey(

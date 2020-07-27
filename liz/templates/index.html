@@ -13,28 +13,43 @@ crossorigin="anonymous">
 
 <body>
 
+    <div class="col-md-8">
+        <h3>&nbsp допросики  <big> Liz</big>&reg <br>
+        &nbsp <small><small><smal>будет не больно</small></small></h3>
+
+        {% load static %}
+            <img src='{% static "kniga_derevo_5291.jpg" %}',  alt="Книга с деревом" width="300" height="200"> 
+        
+        {% if username %}  
+            <h4>Привет, {{ username|title }}!</h4> 
+            {% lorem %}<br>
+                    
+            &nbsp Tы всегда сможешь <a href="logout">выйти</a>
+    </div>  
+    
+    <div class="list-container">
+        {% block quest_list %}
+        {% endblock %}
+    </div>
+
     <div class="content-container">
         <div class="row">
-            <div class="col-md-8">  
-            <h3>&nbsp допросики  <big> Liz</big>&reg <br>
-            &nbsp <small><small><smal>больно не будет!</small></small></h3>
-    
-            {% load static %}
-                <img src='{% static "kniga_derevo_5291.jpg" %}',  alt="Книга с деревом" width="300" height="200"> 
-            
-            {% if username %}  
-                <h4>Привет, {{ username|title }}!</h4> 
-                {% lorem %}<br>
-                      
-                &nbsp Tы всегда сможешь <a href="logout">выйти</a>
+            <div class="col-md-8"> 
 
-                {% if user_type  %}
-                    <p>(this page is only for {{ usertype }})</p> 
-                {% endif %} 
+            <br><p><b>&nbsp {{ is_available }}</b></p>
+               
+            {% for questionnaire in questionnaires %}
+                {% for ap in questionnaire.appoint.all %}
+                {% if ap.isOpen %}
+                <h4><a href="questionnaire/{{ questionnaire.id }}"> {{ questionnaire|title }}</a><small> |available</small></h4> 
+                <pre> from: {{ ap.date_start }} - to:{{ ap.date_finish }}</pre>
+                {% endif %}    
+                {% endfor %} 
+            {% endfor %}
             </div>
         </div>
     </div>  
-
+    
     <div class="content-container">
         <div class="row">
             <div class="col-md-8"> 
@@ -45,27 +60,6 @@ crossorigin="anonymous">
             </div>
         </div>
     </div>          
-    
-    <div class="content-container">
-        <div class="row">
-            <div class="col-md-8">       
-            {% for questionnaire in questionnaires %}
-                {% for ap in questionnaire.appoint.all %}
-                {% if ap.isOpen %}
-                <h4><a href="questionnaire/{{ questionnaire.id }}"> {{ questionnaire|title }}</a><small> |available</small></h4> 
-                <pre> from: {{ ap.date_start }} - to:{{ ap.date_finish }}</pre>
-
-                {% endif %}    
-                {% endfor %} 
-            {% endfor %}
-            </div>
-        </div>
-    </div>  
-    
-    <div class="list-container">
-        {% block quest_list %}
-        {% endblock %}
-    </div>
    
 </body>
 
