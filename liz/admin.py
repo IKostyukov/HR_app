@@ -74,8 +74,13 @@ class EmployeeAnswerAdmin(admin.ModelAdmin):
     def correct_name(self):
         return self.users
         # .user_name
-
-    list_display = ('correct_name', 'questionnaires', 'questions', 'user_answer', 'is_correct' )
+    @staticmethod
+    def points(self):
+        return 2 # здесь можно вызвать вункцию 
+        # их view.py count_qestionnaire
+#импортировав её в admin.py
+#!!!!!!!!!!!!!!!!!#
+    list_display = ('correct_name', 'questionnaires', 'questions', 'user_answer', 'is_correct', 'points' )
     fields = ('users', 'questionnaires', 'questions', 'user_answer', 'is_correct')
     list_filter = ('users', 'questionnaires')
 
@@ -90,8 +95,11 @@ class AppointToAdmin(admin.ModelAdmin):
     @staticmethod
     def correct_name(obj):
         return obj.users.user_name
+    @staticmethod
+    def total(obj):
+        return 9
 
-    list_display = ('correct_name', 'questionnaires', 'date_start', 'date_finish' )
+    list_display = ('correct_name', 'questionnaires', 'date_start', 'date_finish', 'total')
     fields = ('users', 'questionnaires', 'date_start', 'date_finish')
     list_filter = ('users', 'questionnaires','date_finish')
 

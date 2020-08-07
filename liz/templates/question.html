@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>INPUT</title>
+ </head>
+ 
+
+ {{ object|upper }}
+
+ 
+        
+    
+
+      
+
+      <form method="post" action="details">
+            {% csrf_token %}
+
+            <div><br>
+                  <b>&nbsp {{ my_label }} &nbsp {{ quest.question }}</b> &nbsp id:{{ quest.id }}<br>
+                  {% if quest.image.name  != ''  %} 
+                  <img src="{{ quest.image.url }}" alt="картинка к вопросу" width="300" height="200"><br><br>
+                  {% else %} #
+                  {% endif %}
+            </div> 
+        
+
+            <div>{% for variant in variants %}
+            {% if variant.questions_id == quest.id %}
+            
+                  {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer  %}
+
+                        
+                  {% if object.question_type == 'Multi' %}     
+                                          
+                        
+                        <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}" {% if variant.variant == employee_answer.user_answer and employee_answer.users_id == right_id %} checked {% endif %} > &nbsp{{ variant }}<br>
+                        <input type="hidden" name="question_id" value="{{ quest.id }}">
+                        <input type="hidden" name="questionnaire_id" value="{{ questionnaire_id }}">                    
+
+                  {% else %}
+                        <input type="radio" name="answer_one" value="{{ variant.variant }}"> &nbsp{{ variant }}<br>
+                        <input type="hidden" name="question_id" value="{{ quest.id }}">
+                        <input type="hidden" name="questionnaire_id" value="{{ questionnaire_id }}">     
+                        
+                  
+                  {% endif %}
+            {% endif %}
+                                    
+            {% endfor %}
+                  
+                  <input type="submit" value="Отправить">
+            </div>
+               
+                
+      </form>
+               &nbsp&nbsp___________ <br>
+            {% with is_answered=quest.question_answers.all %}
+                {% for employee_answer in is_answered %}
+                
+                    {% if employee_answer.users.user_name_id == user.id and employee_answer.questionnaires_id == questionnaire_id  %}
+                        {% if forloop.first %}
+                        &nbsp ваш ответ: <br>
+                        {% endif %}
+
+                        &nbsp "{{ employee_answer.user_answer }}"  
+
+                        {% if employee_answer.is_correct %} &#x2705 {{total_weight}} <br>
+                        {% endif %}
+
+                        {% if forloop.last %}
+                              <a href="/questionnaire/{{ questionnaire_id }}">вернуться к опроснику</a>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+
+            
+            {% endwith %}
+                
+            
+

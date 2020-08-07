@@ -74,31 +74,56 @@ class ShowQuestionnaires(TemplateView):
                 users__user_name_id=user_id,
                 # appoint__date_finish__gt=datetime.today().date()
                 )
-          
-            context["not_available"] = " Вам не назначен ни один ДОПРОСИК или ваше время истекло "
-            context["is_available"] = " Ваши ДОПРОСИКИ: "
+            is_one_available = AppointTo.objects.filter(date_finish__gt=datetime.today().date(), users__user_name_id=user_id).first()
+            if is_one_available:
+                context["is_available"] = " Ваши ДОПРОСИКИ: "
+            else:
+                context["is_available"] = " Вам не назначен ни один ДОПРОСИК или ваше время истекло "
             context['questionnaires'] = questionnaires 
             context['username'] = self.request.user.username
             
             return context
-    
+
+class DetailQuestion(DetailView):
+    template_name = "question.html"
+    model = Question
+    slug_url_kwarg = 'question_id_'
+    slug_field = 'id'
+
+    def get_context_data(self, **kwargs):
+        if self.request.user.is_authenticated:
+            quest_id = self.object.id
+            user_id = self.request.user.id         
+            right_id = Employee.objects.get(user_name_id=user_id).id
+            context = super().get_context_data(**kwargs)
+            variants = Answer.objects.filter(questions_id=quest_id)
+            # employee_answer = EmployeeAnswer.objects.filter(users_id=user_id, questionnaires_id=self.object.questionnaires.questionnaires__id, question_id=quest_id)
+            # context['employee_answer'] = employee_answer
+            context['question_id'] = self.kwargs["question_id_"]
+            context['questionnaire_id'] = self.kwargs["questionnaire_id_"]
+            context['variants'] = variants
+            context['quest'] = self.object
+            context['username'] = self.request.user.username
+            return context
+        else:            
+            redirect('index')
 
 class DetailQuestionnaire(DetailView):
 
     # queryset = Questionnaire.objects.filter(country="Russia")
     # form_class = QuestionnaireForm
     # context_object_name = 'questionnaire'
-    template_name = 'questlist.html'
+    template_name = 'questionnaire.html'
     # template_name = 'index.html'
     model = Questionnaire
     form_class = QuestionnaireForm # не рабтает!
-    slug_url_kwarg = 'id_'
+    slug_url_kwarg = 'questionnaire_id_'
     slug_field = 'id'
-    # pk_url_kwarg = 'pk'
-    # query_pk_and_slug = True
+   
 
     def get_context_data(self, **kwargs):
         if self.request.user.is_authenticated:
+            questionnaire_id = self.object.id
             user_id = self.request.user.id 
             right_id = Employee.objects.get(user_name_id=user_id).id
             appoint = AppointTo.objects.get(users_id=right_id, questionnaires_id=self.object.id) 
@@ -106,32 +131,23 @@ class DetailQuestionnaire(DetailView):
                 context = super().get_context_data(**kwargs)
                 # context["now"] = timezone.now()   !!!! на будущее !!!!
                 # if request.user.is_authenticated:  
-                    # context['username'] = request.user.username
-                    # context['usertype'] = Employee.objects.get(user_name=request.user).user_type 
                 
-                quests = Question.objects.filter(questionnaires__id=self.object.id)        
-                variants = Answer.objects.filter(questions__questionnaires__id=self.object.id)         
-                right_variants = []
-                for var in variants:
-                    ok = var.is_right_variant
-                    if ok is True:
-                        right_variants.append(var)
-
-                context['right_variants'] = right_variants
-
-
+                questionnaire_dict = Answer.count_qestionnaire(questionnaire_id, right_id)
+                context['weight_questionnaire'] = questionnaire_dict["weight_questionnaire"]
+                context['variants'] = questionnaire_dict["variants"] 
+                context['employee_answers'] = questionnaire_dict["employee_answers"]
+                context['list_answered'] = questionnaire_dict["list_answered"]
                 # date_finish = self.request.POST.date_finish !!! приходит с index.html не POST запрс
                 context['username'] = self.request.user.username
-                context['right_id'] = right_id
-                context['quests'] = quests
-                context['variants'] = variants
+                context['quests'] = questionnaire_dict["quests"]
                 # context['date_finish'] = date_finish
                 return context
             else:
                 redirect('http://127.0.0.1:8000')
 
-        else:
-            return  render(self.request, 'index.html', context)
+        else:            
+            redirect('index')
+
 
 # def details(request, id_):
 #     context = {}
@@ -149,7 +165,7 @@ class DetailQuestionnaire(DetailView):
     
 #     return render(request, 'questionnaire.html', context) 
 
-def answer(request):
+def answer(request, questionnaire_id_):
     if request.method == 'POST':
         question_id = request.POST["question_id"]
         questionnaire_id = request.POST["questionnaire_id"]
@@ -174,8 +190,20 @@ def answer(request):
         for test in tests:
             if test is not None:
                 print(2, test)
-                return redirect('details', id_=questionnaire_id)
-        else:      
+                return redirect('question_details', questionnaire_id_=questionnaire_id, question_id_=question_id )
+        else:   
+            if 'answer_one' in request.POST:
+                answer = request.POST['answer_one']
+                employee_answer = EmployeeAnswer(
+                    users=user_name, 
+                    questions_id=question_id ,
+                    questionnaires_id=questionnaire_id, 
+                    user_answer=answer)
+                if answer in right_variants:
+                    employee_answer.is_correct=True 
+                    employee_answer.save()
+                else:
+                    employee_answer.save()   
             if 'answer1' in request.POST:
                 answer = request.POST['answer1']
                 employee_answer = EmployeeAnswer(
@@ -214,7 +242,7 @@ def answer(request):
                     employee_answer.save()
             # return HttpResponseRedirect(reverse_lazy('details'))
             # return redirect('index')
-            return redirect('details', id_=questionnaire_id)
+            return redirect('question_details', questionnaire_id_=questionnaire_id, question_id_=question_id )
 
 # def login(request):  
 #     if request.method == 'POST':  

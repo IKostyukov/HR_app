@@ -14,7 +14,7 @@ crossorigin="anonymous">
 <body>
 
     <div class="col-md-8">
-        <h3>&nbsp допросики  <big> Liz</big>&reg <br>
+        <h3>&nbsp допросики  <big> Liz</big><small>&reg</small> <br>
         &nbsp <small><small><smal>будет не больно</small></small></h3>
 
         {% load static %}
@@ -28,7 +28,7 @@ crossorigin="anonymous">
     </div>  
     
     <div class="list-container">
-        {% block quest_list %}
+        {% block questionnarie %}
         {% endblock %}
     </div>
 
@@ -55,7 +55,7 @@ crossorigin="anonymous">
             <div class="col-md-8"> 
             {% else %}  
             <p>Вам нужно <a href='register'>зарегистрироваться</a> 
-                или <a href='login'>войти</a></p>  
+                или <a href='/login/'>войти</a></p>  
             {% endif %} 
             </div>
         </div>

@@ -70,7 +70,28 @@ class Answer(models.Model):
         verbose_name = "вариант для ответа"
         verbose_name_plural = "№6: варианты для ответов"
 
-    
+    def count_qestionnaire(questionnaire_id, right_id):
+        quests = Question.objects.filter(questionnaires__id=questionnaire_id)  
+        employee_answers = EmployeeAnswer.objects.filter(users_id = right_id, questionnaires_id = questionnaire_id)
+        variants = Answer.objects.filter(questions__questionnaires__users = right_id, questions__questionnaires__id = questionnaire_id)
+        weight_questionnaire = 0
+        list_answered = [] 
+        for quest in quests:
+            for employee_answer in employee_answers:
+                if employee_answer.questions_id == quest.id and employee_answer.questions_id not in  list_answered:
+                    list_answered.append(employee_answer.questions_id)  
+                if  employee_answer.questions_id == quest.id and employee_answer.is_correct:
+                    for variant in variants:
+                        if variant.questions_id == quest.id and variant.variant == employee_answer.user_answer:
+                            weight_questionnaire += variant.answer_weight               
+        questionnaire_dict = {
+            "weight_questionnaire":weight_questionnaire,
+            "employee_answers":employee_answers,
+            "quests":quests,
+            "variants":variants,
+            "list_answered":list_answered
+            }
+        return questionnaire_dict    
 
     
 class Questionnaire(models.Model):    
@@ -97,10 +118,13 @@ class Questionnaire(models.Model):
         verbose_name_plural = '№3: сформировать опросник'
 
 
+    
+
+
 class EmployeeAnswer(models.Model):
-    users = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.CASCADE, verbose_name='сотрудники')
-    questionnaires = models.ForeignKey(Questionnaire,  null=True, blank=True, on_delete=models.CASCADE, verbose_name='опросник')
-    questions = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='employee_answers', verbose_name='вопрос')
+    users = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.CASCADE,related_name='users', verbose_name='сотрудники')
+    questionnaires = models.ForeignKey(Questionnaire,  null=True, blank=True, on_delete=models.CASCADE, related_name='questionnaire_answers', verbose_name='опросник')
+    questions = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question_answers', verbose_name='вопрос')
     user_answer = models.CharField("Ответ", max_length=256,  null=True, )
     is_correct = models.BooleanField(default=False, verbose_name='верно')
     
@@ -111,6 +135,9 @@ class EmployeeAnswer(models.Model):
     class Meta:
         verbose_name = "ответы сотрудников" 
         verbose_name_plural = '№5: посмотреть ответы сотрудников'     
+
+    
+    
 
     # def counter_weight(self):
     #     total_weight = []
