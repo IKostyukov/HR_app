@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
+from datetime import datetime, timedelta
 # from django.contrib.postgres.fields import JSONField
 
 ANSWER_IS_TRUE = [
@@ -46,9 +46,7 @@ class Question(models.Model):
     image = models.ImageField(upload_to='photos/%Y/%m/%d', null=True, blank=True) 
     question_type = models.CharField(max_length=10, 
     choices=(QUESTIONE_TYPE), blank=True, default='One', verbose_name='тип вопросов')
-    answer_right = models.CharField("правильные ответы", max_length=128, blank=True, null=True)
-    answer_all_variants = models.CharField("варианты ответов (в том числе все правильные)", max_length=128, blank=True, null=True)
-    answer_weight = models.SmallIntegerField("ПУНКТЫ", default=0)
+    
 
     def __str__(self):
         return self.question 
@@ -57,43 +55,7 @@ class Question(models.Model):
         verbose_name = "вопрос"
         verbose_name_plural = '№2: вопросы'
 
-class Answer(models.Model):
-    questions = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers', verbose_name='вопросы')
-    variant = models.CharField("варианты ответа в опроснике", max_length=128,  null=True)
-    is_right_variant = models.BooleanField("укажите правильный ли это вариант?")
-    answer_weight = models.SmallIntegerField("баллы", default=0)
 
-    def __str__(self):
-        return self.variant 
-    
-    class Meta:
-        verbose_name = "вариант для ответа"
-        verbose_name_plural = "№6: варианты для ответов"
-
-    def count_qestionnaire(questionnaire_id, right_id):
-        quests = Question.objects.filter(questionnaires__id=questionnaire_id)  
-        employee_answers = EmployeeAnswer.objects.filter(users_id = right_id, questionnaires_id = questionnaire_id)
-        variants = Answer.objects.filter(questions__questionnaires__users = right_id, questions__questionnaires__id = questionnaire_id)
-        weight_questionnaire = 0
-        list_answered = [] 
-        for quest in quests:
-            for employee_answer in employee_answers:
-                if employee_answer.questions_id == quest.id and employee_answer.questions_id not in  list_answered:
-                    list_answered.append(employee_answer.questions_id)  
-                if  employee_answer.questions_id == quest.id and employee_answer.is_correct:
-                    for variant in variants:
-                        if variant.questions_id == quest.id and variant.variant == employee_answer.user_answer:
-                            weight_questionnaire += variant.answer_weight               
-        questionnaire_dict = {
-            "weight_questionnaire":weight_questionnaire,
-            "employee_answers":employee_answers,
-            "quests":quests,
-            "variants":variants,
-            "list_answered":list_answered
-            }
-        return questionnaire_dict    
-
-    
 class Questionnaire(models.Model):    
     title = models.CharField("Название опросника", max_length=25,  null=True, blank=True)
     description = models.CharField("Описание", max_length=256, null=True, blank=True)
@@ -118,32 +80,144 @@ class Questionnaire(models.Model):
         verbose_name_plural = '№3: сформировать опросник'
 
 
+class Answer(models.Model):
+    questions = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers', verbose_name='вопросы')
+    questionnaires = models.ForeignKey(Questionnaire,  null=True, blank=True, on_delete=models.CASCADE, related_name='answer_in_questionnaire', verbose_name='опросник')
+    variant = models.CharField("варианты ответа в опроснике", max_length=128,  null=True)
+    is_right_variant = models.BooleanField("укажите правильный ли это вариант?")
+    answer_weight = models.SmallIntegerField("баллы", default=0)
+    time_for_answer = models.PositiveSmallIntegerField("время на ответ, сек.", default=15)
+    def __str__(self):
+        return self.variant 
     
+    class Meta:
+        verbose_name = "вариант для ответа"
+        verbose_name_plural = "№6: варианты для ответов"
 
+    def get_rightlist(request):
+        question_id = request.POST["question_id"]
+        right_variants = []
+        variants = Answer.objects.filter(questions_id=question_id).filter(is_right_variant=True)
+        for ok in variants:
+            right_variants.append(ok.variant)
+        return right_variants
+
+    def ditails_qestionnaire(questionnaire_id, right_id):
+        quests = Question.objects.filter(questionnaires__id=questionnaire_id)  
+        employee_answers = EmployeeAnswer.objects.filter(users_id = right_id, questionnaires_id = questionnaire_id)
+        variants = Answer.objects.filter(questions__questionnaires__users = right_id, questions__questionnaires__id = questionnaire_id)
+        weight_questionnaire = 0
+        list_answered = [] 
+        for quest in quests:
+            for employee_answer in employee_answers:
+                if employee_answer.questions_id == quest.id and employee_answer.questions_id not in  list_answered:
+                    list_answered.append(employee_answer.questions_id)  
+                if  employee_answer.questions_id == quest.id and employee_answer.is_correct and employee_answer.in_time:
+                    for variant in variants:
+                        if variant.questions_id == quest.id and variant.variant == employee_answer.user_answer:
+                            weight_questionnaire += variant.answer_weight               
+        dict_questionnaire = {
+            "weight_questionnaire":weight_questionnaire,
+            "employee_answers":employee_answers,
+            "quests":quests,
+            "variants":variants,
+            "list_answered":list_answered,
+            }
+        return dict_questionnaire  
+    
 
 class EmployeeAnswer(models.Model):
     users = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.CASCADE,related_name='users', verbose_name='сотрудники')
-    questionnaires = models.ForeignKey(Questionnaire,  null=True, blank=True, on_delete=models.CASCADE, related_name='questionnaire_answers', verbose_name='опросник')
-    questions = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question_answers', verbose_name='вопрос')
+    questionnaires = models.ForeignKey(Questionnaire,  null=True, blank=True, on_delete=models.CASCADE, related_name='employee_questionnaire', verbose_name='опросник')
+    questions = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='employee_question', verbose_name='вопрос')
     user_answer = models.CharField("Ответ", max_length=256,  null=True, )
     is_correct = models.BooleanField(default=False, verbose_name='верно')
+    in_time = models.BooleanField(default=True, verbose_name='вовремя')
     
-    def __str__(self):
-        if self.users.user_name.username:
-            return self.users.user_name.username
-
     class Meta:
         verbose_name = "ответы сотрудников" 
         verbose_name_plural = '№5: посмотреть ответы сотрудников'     
 
-    
-    
 
-    # def counter_weight(self):
-    #     total_weight = []
-    #     answer = Answer.objects.filret(questions_id=self.questions_id)
-    #     if self.is_correct:
-    #     total_weight += 
+    def __str__(self):
+        if self.users.user_name.username:
+            return self.users.user_name.username
+
+
+    def create_instans(self, request, answer):
+        user_name =  Employee.objects.get(user_name=request.user)
+        question_id = request.POST.get("question_id")
+        questionnaire_id = request.POST.get("questionnaire_id")
+        employee_answer = EmployeeAnswer(
+                        users=user_name, 
+                        questions_id=question_id,
+                        questionnaires_id=questionnaire_id, 
+                        user_answer=answer)
+        return employee_answer
+
+    def check_time(request):
+        format = '%Y-%m-%d %H:%M:%S.%f'
+        time_finish = datetime.strptime(str(datetime.now()), format) 
+        time_start_str = request.POST['time_start']
+        time_start = datetime.strptime(time_start_str, format)
+        time_for_answer = request.POST['time_for_answer']
+        delta_real = time_finish - time_start
+        delta_prompt = timedelta(seconds=int(time_for_answer))
+        if delta_real < delta_prompt: 
+            return True
+        else:
+            return False
+
+    def save_answer(request, answer, right_variants, time_ok):
+        instans = EmployeeAnswer()
+        employee_answer = instans.create_instans(request, answer)
+        if answer in right_variants:
+            employee_answer.is_correct = True
+        if time_ok:
+            employee_answer.save()
+            return
+        else:
+            employee_answer.in_time = False
+            employee_answer.save()
+            return              
+
+
+    @property
+    def answer_weight_func(self):
+        """ Этот атрибут выводит набранные баллы пользователя за отдельный ответ
+         в админке №5 "Посмотреть ответы сотрудников" (столбец"points")""" 
+        questionnaire_id = self.questionnaires.id
+        user_id = self.users.user_name_id
+        question_id = self.questions.id
+        # quests = Question.objects.filter(questionnaires__id=questionnaire_id)  
+        # employee_answers = EmployeeAnswer.objects.filter(users__user_name_id = user_id, questionnaires_id = questionnaire_id)
+        variants = Answer.objects.filter(questions__questionnaires__users__user_name_id=user_id, questions__questionnaires__id = questionnaire_id)  
+        # for quest in quests:
+        #     if  self.questions_id == quest.id:
+        for variant in variants:
+            if variant.questions_id == question_id and variant.variant == self.user_answer:
+                return variant.answer_weight      
+
+    # @property    #!!! СИЛЬНО ТОРМОЗИТ ЗАГРУЗКУ СТРАНИЦЫ ПАНЕЛИ АДМИНИСТРАТОРА
+    #                #!!! посткольку для каждого ответа на каждый вопрос каждого пользователя запускает эту функцию.
+    #                # !!! Значение тотал ограничиваю подсчетом функции total_weight на стр №4 админки 
+    # def total_weight_func(self):  
+    #     #  """Этот атрибут выводит набранные баллы пользователя за пройденный опросник
+    #     #  в админке №5 "Посмотреть ответы сотрудников" (столбец"total")""" 
+    #     questionnaire_id = self.questionnaires.id
+    #     user_id = self.users.user_name_id
+    #     quests = Question.objects.filter(questionnaires__id=questionnaire_id)  
+    #     employee_answers = EmployeeAnswer.objects.filter(users__user_name_id = user_id, questionnaires_id = questionnaire_id)
+    #     variants = Answer.objects.filter(questions__questionnaires__users__user_name_id=user_id, questions__questionnaires__id = questionnaire_id)  
+    #     weight_questionnaire = 0
+    #     for quest in quests:
+    #         for employee_answer in employee_answers:
+    #             if  employee_answer.questions_id == quest.id and employee_answer.is_correct:
+    #                 for variant in variants:
+    #                     if variant.questions_id == quest.id and variant.variant == employee_answer.user_answer:
+    #                         weight_questionnaire += variant.answer_weight             
+    #     return weight_questionnaire
+
 
 class AppointTo(models.Model):
     users = models.ForeignKey(
@@ -159,6 +233,12 @@ class AppointTo(models.Model):
         verbose_name='опросник' )
     date_start = models.DateField("Дата начала опроса", default=datetime.now, blank=True)
     date_finish = models.DateField("Дата окончания опроса", default=datetime.now, blank=True)
+
+    class Meta:
+        verbose_name = ' опросник  сотруднику '
+        verbose_name_plural = '№4: назначить опросник или посмотреть общие баллы'  
+
+
  
     @property
     def isOpen(self):
@@ -169,17 +249,31 @@ class AppointTo(models.Model):
             return True
         else:
             return False
+
+    @property
+    def total_weight(self):
+        """Атрибут выводит набранные баллы пользователя за пройденный опросник
+         в панель администратора в "Назначить опросник" колонка 'total' """
+        questionnaire_id = self.questionnaires.id
+        user_id = self.users.user_name_id
+        quests = Question.objects.filter(questionnaires__id=questionnaire_id)  
+        employee_answers = EmployeeAnswer.objects.filter(users__user_name_id = user_id, questionnaires_id = questionnaire_id)
+        variants = Answer.objects.filter(questions__questionnaires__users__user_name_id=user_id, questions__questionnaires__id = questionnaire_id)
+        weight_questionnaire = 0
+        for quest in quests:
+            for employee_answer in employee_answers:
+                if  employee_answer.questions_id == quest.id and employee_answer.is_correct and employee_answer.in_time:
+                    for variant in variants:
+                        if variant.questions_id == quest.id and variant.variant == employee_answer.user_answer:
+                            weight_questionnaire += variant.answer_weight             
+        return weight_questionnaire
         
     def __srt__(self):
         if self.users.user_name.username:
             return  self.users.user_name.username
 
-    class Meta:
-        verbose_name = ' опросник  сотруднику '
-        verbose_name_plural = '№4: назначить опросник'  
+    
 
-
-# class ShowResults(models.Model):
 
 
 

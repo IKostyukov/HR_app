@@ -11,7 +11,7 @@ from django.contrib.auth import login, authenticate
 from liz.forms import EmployeeCreationForm, QuestionnaireForm   
 from liz.models import Employee, Question, Answer, Questionnaire
 from liz.models import AppointTo,  EmployeeAnswer
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
 
 class RegisterView(FormView):  
@@ -69,19 +69,13 @@ class ShowQuestionnaires(TemplateView):
         if self.request.user.is_authenticated:  
             context = super().get_context_data(**kwargs)
             user_id = self.request.user.id
-            # right_id = Employee.objects.get(user_name_id=user_id).id
-            questionnaires = Questionnaire.objects.filter(
-                users__user_name_id=user_id,
-                # appoint__date_finish__gt=datetime.today().date()
-                )
-            is_one_available = AppointTo.objects.filter(date_finish__gt=datetime.today().date(), users__user_name_id=user_id).first()
-            if is_one_available:
+            appointments = AppointTo.objects.filter(date_finish__gt=datetime.today().date(), users__user_name_id=user_id)
+            context['appointments'] = appointments
+            context['username'] = self.request.user.username
+            if appointments.first():
                 context["is_available"] = " Ваши ДОПРОСИКИ: "
             else:
-                context["is_available"] = " Вам не назначен ни один ДОПРОСИК или ваше время истекло "
-            context['questionnaires'] = questionnaires 
-            context['username'] = self.request.user.username
-            
+                context["is_available"] = " Вам не назначен ни один ДОПРОСИК или ваше время истекло "  
             return context
 
 class DetailQuestion(DetailView):
@@ -95,15 +89,21 @@ class DetailQuestion(DetailView):
             quest_id = self.object.id
             user_id = self.request.user.id         
             right_id = Employee.objects.get(user_name_id=user_id).id
+            questionnaire_id = self.kwargs["questionnaire_id_"]
             context = super().get_context_data(**kwargs)
             variants = Answer.objects.filter(questions_id=quest_id)
-            # employee_answer = EmployeeAnswer.objects.filter(users_id=user_id, questionnaires_id=self.object.questionnaires.questionnaires__id, question_id=quest_id)
-            # context['employee_answer'] = employee_answer
+            employee_answers = EmployeeAnswer.objects.filter(users__user_name_id=user_id, questionnaires_id=questionnaire_id, questions_id=quest_id)
+            time_for_answer = variants.filter(is_right_variant=True).first().time_for_answer
+            context['employee_answers'] = employee_answers
+            context['time_for_answer'] = time_for_answer
             context['question_id'] = self.kwargs["question_id_"]
-            context['questionnaire_id'] = self.kwargs["questionnaire_id_"]
+            context['questionnaire_id'] = questionnaire_id
             context['variants'] = variants
-            context['quest'] = self.object
+            context['quest'] = self.object        
+            time_start = str(datetime.now()) 
+            context['time_start'] = time_start
             context['username'] = self.request.user.username
+            
             return context
         else:            
             redirect('index')
@@ -129,22 +129,18 @@ class DetailQuestionnaire(DetailView):
             appoint = AppointTo.objects.get(users_id=right_id, questionnaires_id=self.object.id) 
             if appoint.isOpen:
                 context = super().get_context_data(**kwargs)
-                # context["now"] = timezone.now()   !!!! на будущее !!!!
-                # if request.user.is_authenticated:  
-                
-                questionnaire_dict = Answer.count_qestionnaire(questionnaire_id, right_id)
-                context['weight_questionnaire'] = questionnaire_dict["weight_questionnaire"]
-                context['variants'] = questionnaire_dict["variants"] 
-                context['employee_answers'] = questionnaire_dict["employee_answers"]
-                context['list_answered'] = questionnaire_dict["list_answered"]
+                dict_questionnaire = Answer.ditails_qestionnaire(questionnaire_id, right_id)
+                context['weight_questionnaire'] = dict_questionnaire["weight_questionnaire"]
+                context['variants'] = dict_questionnaire["variants"] 
+                context['employee_answers'] = dict_questionnaire["employee_answers"]
+                context['list_answered'] = dict_questionnaire["list_answered"]
                 # date_finish = self.request.POST.date_finish !!! приходит с index.html не POST запрс
                 context['username'] = self.request.user.username
-                context['quests'] = questionnaire_dict["quests"]
-                # context['date_finish'] = date_finish
+                context['quests'] = dict_questionnaire["quests"]
+                # context['date_finish'] = date_finis
                 return context
             else:
                 redirect('http://127.0.0.1:8000')
-
         else:            
             redirect('index')
 
@@ -169,77 +165,31 @@ def answer(request, questionnaire_id_):
     if request.method == 'POST':
         question_id = request.POST["question_id"]
         questionnaire_id = request.POST["questionnaire_id"]
-        right_variants = []
-        variants = Answer.objects.filter(questions_id=question_id).filter(is_right_variant=True)
-        for ok in variants:
-            right_variants.append(ok.variant)
         user_id = request.user.id
-        right_id = Employee.objects.get(user_name_id=user_id).id
+        # right_id = Employee.objects.get(user_name_id=user_id).id
         user_name =  Employee.objects.get(user_name=request.user)
-
-        #test from
-        questionnaire = Questionnaire.objects.filter(questions__id=question_id) #тест на получение
-        for qus in questionnaire: 
-            print(qus.id, "id вопроса получили из Опросника")
-
-        # test till
-
-        # test = get_object_or_404(EmployeeAnswer, users=user_name, user_answer=None)
-        
-        tests = EmployeeAnswer.objects.filter(users=user_name, questionnaires=questionnaire_id, questions=question_id)
-        for test in tests:
-            if test is not None:
-                print(2, test)
+        is_answered = EmployeeAnswer.objects.filter(users=user_name, questionnaires=questionnaire_id, questions=question_id)
+        for is_answer in is_answered:
+            if is_answer is not None:
                 return redirect('question_details', questionnaire_id_=questionnaire_id, question_id_=question_id )
-        else:   
+        else:
+            right_variants = Answer.get_rightlist(request)
+            time_ok = EmployeeAnswer.check_time(request)   
             if 'answer_one' in request.POST:
                 answer = request.POST['answer_one']
-                employee_answer = EmployeeAnswer(
-                    users=user_name, 
-                    questions_id=question_id ,
-                    questionnaires_id=questionnaire_id, 
-                    user_answer=answer)
-                if answer in right_variants:
-                    employee_answer.is_correct=True 
-                    employee_answer.save()
-                else:
-                    employee_answer.save()   
+                EmployeeAnswer.save_answer(request, answer, right_variants, time_ok) 
             if 'answer1' in request.POST:
                 answer = request.POST['answer1']
-                employee_answer = EmployeeAnswer(
-                    users=user_name, 
-                    questions_id=question_id ,
-                    questionnaires_id=questionnaire_id, 
-                    user_answer=answer)
-                if answer in right_variants:
-                    employee_answer.is_correct=True 
-                    employee_answer.save()
-                else:
-                    employee_answer.save()
+                EmployeeAnswer.save_answer(request, answer, right_variants, time_ok) 
             if 'answer2' in request.POST:
                 answer = request.POST['answer2']
-                employee_answer = EmployeeAnswer(users=user_name, questions_id=question_id, questionnaires_id=questionnaire_id , user_answer=answer)
-                if answer in right_variants:
-                    employee_answer.is_correct=True 
-                    employee_answer.save()
-                else:
-                    employee_answer.save()
+                EmployeeAnswer.save_answer(request, answer, right_variants, time_ok) 
             if 'answer3' in request.POST:
                 answer = request.POST['answer3']
-                employee_answer = EmployeeAnswer(users=user_name, questions_id=question_id, questionnaires_id=questionnaire_id , user_answer=answer)
-                if answer in right_variants:
-                    employee_answer.is_correct=True 
-                    employee_answer.save()
-                else:
-                    employee_answer.save()
+                EmployeeAnswer.save_answer(request, answer, right_variants, time_ok) 
             if 'answer4'in request.POST:
                 answer = request.POST['answer4']
-                employee_answer = EmployeeAnswer(users=user_name, questions_id=question_id, questionnaires_id=questionnaire_id , user_answer=answer)
-                if answer in right_variants:
-                    employee_answer.is_correct=True 
-                    employee_answer.save()
-                else:
-                    employee_answer.save()
+                EmployeeAnswer.save_answer(request, answer, right_variants, time_ok)    
             # return HttpResponseRedirect(reverse_lazy('details'))
             # return redirect('index')
             return redirect('question_details', questionnaire_id_=questionnaire_id, question_id_=question_id )
@@ -258,3 +208,5 @@ def answer(request, questionnaire_id_):
 # def logout(request):  
 #     auth.logout(request)  
 #     return HttpResponseRedirect(reverse_lazy('registration'))
+
+# <script defer src="timer.js"></script>

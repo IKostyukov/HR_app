@@ -35,17 +35,13 @@ crossorigin="anonymous">
     <div class="content-container">
         <div class="row">
             <div class="col-md-8"> 
-
-            <br><p><b>&nbsp {{ is_available }}</b></p>
-               
-            {% for questionnaire in questionnaires %}
-                {% for ap in questionnaire.appoint.all %}
-                {% if ap.isOpen %}
-                <h4><a href="questionnaire/{{ questionnaire.id }}"> {{ questionnaire|title }}</a><small> |available</small></h4> 
+            <br><p><b>&nbsp {{ is_available }}</b></p>   
+                {% for ap in appointments %}
+                               
+                <h4><a href="questionnaire/{{ ap.questionnaires_id }}">  {{ ap.questionnaires.title|title }}</a><small> |available</small></h4> 
                 <pre> from: {{ ap.date_start }} - to:{{ ap.date_finish }}</pre>
-                {% endif %}    
-                {% endfor %} 
-            {% endfor %}
+               
+                {% endfor %}      
             </div>
         </div>
     </div>  
@@ -60,7 +56,5 @@ crossorigin="anonymous">
             </div>
         </div>
     </div>          
-   
 </body>
-
 </html>

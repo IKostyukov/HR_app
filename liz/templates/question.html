@@ -3,80 +3,134 @@
  <head>
   <meta charset="utf-8">
   <title>INPUT</title>
+  <script defer src="timer.js"></script>
  </head>
- 
 
  {{ object|upper }}
-
+ <br>Время на ответ {{ time_for_answer }}, сек.
+ <br> Сейчас  {% now " H:i:s:u" %}
+ <br>Время начачла {{ time_start }}
  
-        
-    
-
-      
-
       <form method="post" action="details">
-            {% csrf_token %}
-
+            {% csrf_token %}        
             <div><br>
-                  <b>&nbsp {{ my_label }} &nbsp {{ quest.question }}</b> &nbsp id:{{ quest.id }}<br>
+                  <b>&nbsp ВОПРОС<br>
+                     &nbsp {{ quest.question }}</b> &nbsp id:{{ quest.id }}<br>
                   {% if quest.image.name  != ''  %} 
                   <img src="{{ quest.image.url }}" alt="картинка к вопросу" width="300" height="200"><br><br>
                   {% else %} #
                   {% endif %}
             </div> 
-        
 
             <div>{% for variant in variants %}
-            {% if variant.questions_id == quest.id %}
-            
-                  {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer  %}
-
-                        
-                  {% if object.question_type == 'Multi' %}     
-                                          
-                        
-                        <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}" {% if variant.variant == employee_answer.user_answer and employee_answer.users_id == right_id %} checked {% endif %} > &nbsp{{ variant }}<br>
+            {% if variant.questions_id == quest.id %}      
+                            
+                  {% if object.question_type == 'Multi' %}        
+                  {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer  %}                  
+                        <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}"> &nbsp{{ variant }}<br> 
                         <input type="hidden" name="question_id" value="{{ quest.id }}">
-                        <input type="hidden" name="questionnaire_id" value="{{ questionnaire_id }}">                    
-
+                        <input type="hidden" name="questionnaire_id" value="{{ questionnaire_id }}">
+                        <input type="hidden" name="time_start" value="{{ time_start }}">   
+                        <input type="hidden" name="time_for_answer" value="{{ variant.time_for_answer }}">    
                   {% else %}
-                        <input type="radio" name="answer_one" value="{{ variant.variant }}"> &nbsp{{ variant }}<br>
+                        <input type="radio" name="answer_one" value="{{ variant.variant }}"> &nbsp{{ variant }} {%if variant.is_right_variant %} Yes {% endif %}<br> 
                         <input type="hidden" name="question_id" value="{{ quest.id }}">
-                        <input type="hidden" name="questionnaire_id" value="{{ questionnaire_id }}">     
-                        
-                  
+                        <input type="hidden" name="questionnaire_id" value="{{ questionnaire_id }}">
+                        <input type="hidden" name="time_start" value="{{ time_start }}">   
+                        <input type="hidden" name="time_for_answer" value="{{ variant.time_for_answer }}">    
+                                               
                   {% endif %}
-            {% endif %}
-                                    
-            {% endfor %}
-                  
+            {% endif %}                                 
+            {% endfor %}              
                   <input type="submit" value="Отправить">
-            </div>
-               
-                
+            </div>           
       </form>
-               &nbsp&nbsp___________ <br>
-            {% with is_answered=quest.question_answers.all %}
-                {% for employee_answer in is_answered %}
-                
-                    {% if employee_answer.users.user_name_id == user.id and employee_answer.questionnaires_id == questionnaire_id  %}
+            
+      &nbsp&nbsp___________ <br>
+
+      <section>
+            <h1 id="clock"></h1>
+            <p id="color"></p>
+      </section>
+
+             
+      {% if employee_answers|length > 0 %}
+            {% for employee_answer in employee_answers %} 
+                  
                         {% if forloop.first %}
-                        &nbsp ваш ответ: <br>
+                              &nbsp ваш ответ: <br>
                         {% endif %}
 
                         &nbsp "{{ employee_answer.user_answer }}"  
 
-                        {% if employee_answer.is_correct %} &#x2705 {{total_weight}} <br>
+                        {% if employee_answer.is_correct %}
+                              &#x2705  <br>
                         {% endif %}
 
                         {% if forloop.last %}
                               <a href="/questionnaire/{{ questionnaire_id }}">вернуться к опроснику</a>
                         {% endif %}
-                    {% endif %}
-                {% endfor %}
+            {% endfor %}
+      {% else %}
+
+      <script>
+      const clock = document.querySelector("#clock");
+
+      const color = document.querySelector("#color");
+
+      const checkLength = (value, interval) =>{
+            if(value.length < interval) return 0 + value;
+      return value;
+      }
+
+      let count = {{ time_for_answer }};
+      
+
+      (function rgbClock(){
+            const m = String(parseInt(count/60))
+            const s = String(count % 60)
+      
+            const colorString = `rgb(${200}, ${200}, ${s * 4.25})`;
+      
+            clock.innerText = '  Время на ответ  ' + checkLength(m, 2) + ':' + checkLength(s, 2)
+            color.innerText = colorString
+            
+            document.body.style.background = colorString;
+            
+            const timer = window.setTimeout(rgbClock, 1000);
+            count--;
+            
+            if(count < 0){
+                  clearTimeout(timer)
+            }
+      })()
+      
+      </script>
+
+      <style>
+
+      @import url(https://fonts.googleapis.com/css?family=Red+Hat+Display&display=swap);
+
+      section{
+      text-align: left;
+      }
+
+      h1, p{
+      font-family: 'Red Hat Display', sans-serif;
+      }
+
+      </style>
+
+      {% endif %}
+                
+
+
+
+
+
 
             
-            {% endwith %}
+           
                 
             
 

@@ -25,6 +25,7 @@ class AnswerInline(admin.TabularInline):
     # if var_exist.variants:
     #     extra=0
     # else:
+    max_num=4 
     extra=4
     
 
@@ -49,7 +50,7 @@ class QuestionAdmin(admin.ModelAdmin):
     #     # quest = Questionnaire.objects.prefetch_related(Prefetch('questions', queryset=queryset))
     #     return queryset
     inlines = (AnswerInline, EmployeeAnswerInline, )
-    list_display = ('question','image', 'answer_right', 'answer_weight')
+    list_display = ('question','image')
     list_filter = ('question_type', 'questionnaires')
     def has_module_permission(self, request):
         return True
@@ -63,31 +64,39 @@ class QuestionAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return True
 
+
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(EmployeeAnswer)
 class EmployeeAnswerAdmin(admin.ModelAdmin):
-    
+
     @staticmethod
-    def correct_name(self):
-        return self.users
+    def correct_name(obj):
+        return obj.users
         # .user_name
+
     @staticmethod
-    def points(self):
-        return 2 # здесь можно вызвать вункцию 
-        # их view.py count_qestionnaire
-#импортировав её в admin.py
-#!!!!!!!!!!!!!!!!!#
-    list_display = ('correct_name', 'questionnaires', 'questions', 'user_answer', 'is_correct', 'points' )
-    fields = ('users', 'questionnaires', 'questions', 'user_answer', 'is_correct')
+    def weight(obj):
+        return obj.answer_weight_func # здесь можно вызвать вункцию 
+        
+    # @staticmethod    
+    # def total(obj):
+    #     return obj.total_weight_func # !!!! Здесь сильно тормозит программу
+
+    list_display = ('correct_name', 'questionnaires', 'questions',  'weight', 'user_answer', 'is_correct', 'in_time')
+    # , 'total' )
+    fields = ('users', 'questionnaires', 'questions', 'user_answer', 'is_correct', 'time_for_answer')
     list_filter = ('users', 'questionnaires')
+
 
 @admin.register(Questionnaire)
 class QuestionnaireAdmin(admin.ModelAdmin):
     inlines = (AppointToInline,)
     list_filter = ('title', 'users', 'questions')
+
 
 @admin.register(AppointTo)
 class AppointToAdmin(admin.ModelAdmin):
@@ -95,22 +104,26 @@ class AppointToAdmin(admin.ModelAdmin):
     @staticmethod
     def correct_name(obj):
         return obj.users.user_name
+
     @staticmethod
-    def total(obj):
-        return 9
+    def total(obj): #выводит в панели администратора в "Назначить опросник" колонку 'total'
+        return obj.total_weight
 
     list_display = ('correct_name', 'questionnaires', 'date_start', 'date_finish', 'total')
     fields = ('users', 'questionnaires', 'date_start', 'date_finish')
     list_filter = ('users', 'questionnaires','date_finish')
+
 
 # @admin.register(QuestionnaireContent)
 # class QuestionnaireContentAdmin(admin.ModelAdmin):
 #     pass
     # list_display = ('')
 
+
 # @admin.register(EmployeeAnswer)
 # class EmployeeAnswerAdmin(admin.ModelAdmin):
 #     pass
+
 
 # @admin.register(QuestionnaireResult)
 # class QuestionnaireResultAdmin(admin.ModelAdmin):
