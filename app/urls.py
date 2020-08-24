@@ -30,20 +30,19 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', index, name='index'),
     path('', ShowQuestionnaires.as_view(), name='index'),
-    path('questionnaire/details', answer, name='good_1'),
-    path('questionnaire/<int:questionnaire_id_>/question/details', answer, name='good_2'),
-    path('questionnaire/inp', answer, name='good_3'),
-    path('questionnaire/login', LoginView.as_view(), name='login-again'),
-    path('questionnaire/<int:questionnaire_id_>/question/login',  LoginView.as_view(), name='login-again'),
+    path('questionnaire/<int:questionnaire_id_>/question/details', answer, name='good'),
+    path('questionnaire/login', LoginView.as_view(), name='login-again_1'),
+    path('questionnaire/<int:questionnaire_id_>/question/login',  LoginView.as_view(), name='login-again_2'),
     path('questionnaire/logout', LogoutView.as_view(), name='logout_again'),
     path('questionnaire/<int:questionnaire_id_>', DetailQuestionnaire.as_view(), name='questionnaire_details'),
     path('questionnaire/<int:questionnaire_id_>/question/<int:question_id_>', DetailQuestion.as_view(), name='question_details'),
     path('login/', LoginView.as_view(), name='login'),  
 	path('logout/', LogoutView.as_view(), name='logout'), 
     path('register/', RegisterView.as_view(  
-        template_name='register.html',  
-		success_url=reverse_lazy('profile-create')  
-    ), name='register'),  
+                                            template_name='register.html',  
+		                                    success_url=reverse_lazy('profile-create')  
+                                            ), 
+                                            name='register'),  
     path('profile-create/', CreateUserProfile.as_view(), name='profile-create'), 
       
 ]

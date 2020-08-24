@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView, DetailView, TemplateView 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate  
-from liz.forms import EmployeeCreationForm, QuestionnaireForm   
+from liz.forms import EmployeeCreationForm
 from liz.models import Employee, Question, Answer, Questionnaire
 from liz.models import AppointTo,  EmployeeAnswer
 from datetime import datetime, timedelta
@@ -43,23 +43,6 @@ class CreateUserProfile(FormView):
         instance.save()  
         return super(CreateUserProfile, self).form_valid(form)
 
-# def index(request):
-#     context = {}
-#     if request.user.is_authenticated:  
-#         context['username'] = request.user.username
-#         context['usertype'] = Employee.objects.get(user_name=request.user).user_type 
-#         quests = Question.objects.all()
-#         variants = Answer.objects.all() 
-#         questionnaires = Questionnaire.objects.all()
-        
-#         appoint = AppointTo.objects.filter(date_finish__gt=datetime.today().date(), users=request.user)
-#         context['appoint'] = appoint
-#         context['quests'] = quests
-#         context['variants'] = variants
-#         context['questionnaires'] = questionnaires
-#     return render(request, 'index.html', context) 
-
-
 
 class ShowQuestionnaires(TemplateView):
     
@@ -77,6 +60,8 @@ class ShowQuestionnaires(TemplateView):
             else:
                 context["is_available"] = " Вам не назначен ни один ДОПРОСИК или ваше время истекло "  
             return context
+
+
 
 class DetailQuestion(DetailView):
     template_name = "question.html"
@@ -108,19 +93,14 @@ class DetailQuestion(DetailView):
         else:            
             redirect('index')
 
-class DetailQuestionnaire(DetailView):
 
-    # queryset = Questionnaire.objects.filter(country="Russia")
-    # form_class = QuestionnaireForm
-    # context_object_name = 'questionnaire'
+
+class DetailQuestionnaire(DetailView):
     template_name = 'questionnaire.html'
-    # template_name = 'index.html'
     model = Questionnaire
-    form_class = QuestionnaireForm # не рабтает!
     slug_url_kwarg = 'questionnaire_id_'
     slug_field = 'id'
    
-
     def get_context_data(self, **kwargs):
         if self.request.user.is_authenticated:
             questionnaire_id = self.object.id
@@ -145,21 +125,7 @@ class DetailQuestionnaire(DetailView):
             redirect('index')
 
 
-# def details(request, id_):
-#     context = {}
-#     if request.user.is_authenticated:  
-#         context['username'] = request.user.username
-#         context['usertype'] = Employee.objects.get(user_name=request.user).user_type 
-#         quests = Question.objects.all()
-#         variants = Answer.objects.all() 
-#         questionnaires = Questionnaire.objects.all()
-#         if id_.isdigit() :
-#             context['id_'] = int(id_)
-#         context['quests'] = quests
-#         context['variants'] = variants
-#         context['questionnaires'] = questionnaires
-    
-#     return render(request, 'questionnaire.html', context) 
+
 
 def answer(request, questionnaire_id_):
     if request.method == 'POST':
@@ -190,11 +156,12 @@ def answer(request, questionnaire_id_):
             if 'answer4'in request.POST:
                 answer = request.POST['answer4']
                 EmployeeAnswer.save_answer(request, answer, right_variants, time_ok)    
-            # return HttpResponseRedirect(reverse_lazy('details'))
-            # return redirect('index')
             return redirect('question_details', questionnaire_id_=questionnaire_id, question_id_=question_id )
 
+
+
 # def login(request):  
+""" i replaced it  to the FormView-based that above"""
 #     if request.method == 'POST':  
 #         form = AuthenticationForm(request=request, data=request.POST)  
 #         if form.is_valid():  
@@ -205,8 +172,44 @@ def answer(request, questionnaire_id_):
 #         return render(request, 'login.html', context)  
   
   
-# def logout(request):  
+# def logout(request):
+""" i replaced it  to the FormView-based that above"""  
 #     auth.logout(request)  
 #     return HttpResponseRedirect(reverse_lazy('registration'))
 
-# <script defer src="timer.js"></script>
+
+
+# def index(request):
+""" I am replaced it to the fbove TemplateView-based"""
+#     context = {}
+#     if request.user.is_authenticated:  
+#         context['username'] = request.user.username
+#         context['usertype'] = Employee.objects.get(user_name=request.user).user_type 
+#         quests = Question.objects.all()
+#         variants = Answer.objects.all() 
+#         questionnaires = Questionnaire.objects.all()
+        
+#         appoint = AppointTo.objects.filter(date_finish__gt=datetime.today().date(), users=request.user)
+#         context['appoint'] = appoint
+#         context['quests'] = quests
+#         context['variants'] = variants
+#         context['questionnaires'] = questionnaires
+#     return render(request, 'index.html', context) 
+
+
+# def details(request, id_):
+"""Function describes questionnare content.  But I replaced it to the above DetailView-based"""
+#     context = {}
+#     if request.user.is_authenticated:  
+#         context['username'] = request.user.username
+#         context['usertype'] = Employee.objects.get(user_name=request.user).user_type 
+#         quests = Question.objects.all()
+#         variants = Answer.objects.all() 
+#         questionnaires = Questionnaire.objects.all()
+#         if id_.isdigit() :
+#             context['id_'] = int(id_)
+#         context['quests'] = quests
+#         context['variants'] = variants
+#         context['questionnaires'] = questionnaires
+    
+#     return render(request, 'questionnaire.html', context) 

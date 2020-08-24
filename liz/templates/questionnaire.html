@@ -1,71 +1,99 @@
 {% extends 'index.html' %}
 
 {% block questionnarie %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Questionnaire</title>
+    <link 
+href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+rel="stylesheet"
+integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+crossorigin="anonymous"> 
+
+</head>
+
+<body>
 <big><pre>&nbsp ...или перейти <a href="{% url 'index' %}"> на главную</a></pre></big>
 
-<h3>&nbsp&nbsp&nbsp{{ object|upper }}
-    {% if weight_questionnaire and list_answered|length_is:quests.count %}
-       | пройден
-        {% with weight=weight_questionnaire|make_list|last %}
-                {% if  weight == '1' and  weight_questionnaire != 11 %}
-                <small><small>{{ weight_questionnaire }}  балл</small></small><br>
-                {% elif weight_questionnaire < 5 %}
-                <small><small>{{ weight_questionnaire }}  балла</small></small><br>
-                {% else %}
-                <small><small>{{ weight_questionnaire }}  баллов</small></small><br>
-                {% endif %}
-        {% endwith %}
-    {% endif %}   
-</h3>
-    <pre>  описание опросника: {{ object.description|lower }}</pre>
-    
+<div class="content-container">
+    <div class="row">
+        <div class="col-md-8"> 
+            <h3>&nbsp&nbsp&nbsp{{ object|upper }}
+                {% if weight_questionnaire and list_answered|length_is:quests.count %}
+                | пройден
+                    {% with weight=weight_questionnaire|make_list|last %}
+                            {% if  weight == '1' and  weight_questionnaire != 11 %}
+                            <small><small>{{ weight_questionnaire }}  балл</small></small><br>
+                            {% elif weight_questionnaire < 5 %}
+                            <small><small>{{ weight_questionnaire }}  балла</small></small><br>
+                            {% else %}
+                            <small><small>{{ weight_questionnaire }}  баллов</small></small><br>
+                            {% endif %}
+                    {% endwith %}
+                {% endif %}   
+            </h3>
+                <pre>  описание опросника: {{ object.description|lower }}</pre>
+        </div>
+    </div>
+</div>        
 
-    {% for quest in quests %}
-        {% with counter_value=forloop.counter|stringformat:"s" %}
-        {% with my_label="ВОПРОС "|add:counter_value %}
+<div class="list-container">
+    <div class="row">
+        <div class="col-md-8"> 
+            {% for quest in quests %}
+                {% with counter_value=forloop.counter|stringformat:"s" %}
+                {% with my_label="ВОПРОС "|add:counter_value %}
 
-        <div><br>
-             &nbsp {{ my_label }} <br> 
-            {% if quest.id in list_answered %}
-            <b>&nbsp {{ quest.question }}</b> &nbsp id:{{ quest.id }}<br> 
-            &nbsp&nbsp___________ <br>
-        </div> 
-            
+                <div><br>
+                    &nbsp {{ my_label }} <br> 
+                    {% if quest.id in list_answered %}
+                    <b>&nbsp {{ quest.question }}</b> &nbsp id:{{ quest.id }}<br> 
+                    &nbsp&nbsp___________ <br>
+                </div> 
+                    
 
-            &nbsp ответ:<br>
+                    &nbsp ответ:<br>
 
-                {% for employee_answer in  employee_answers %}           
-                    {% if  employee_answer.questions_id == quest.id  %}     
-                    &nbsp  &nbsp  &nbsp {{ employee_answer.user_answer }}
-                        {% if employee_answer.is_correct %}
-                        &#x2705 
-                            {% for variant in  variants %} 
-                                {% if variant.questions_id == employee_answer.questions_id and variant.variant == employee_answer.user_answer  %}
-                                    {% if employee_answer.in_time %}
-                                        {% if variant.answer_weight == 1 %}
-                                        {{ variant.answer_weight }}  балл<br>
-                                        {% elif variant.answer_weight < 5 %}
-                                        {{ variant.answer_weight }}  балла<br>
-                                        {% else %}
-                                        {{ variant.answer_weight }}  баллов<br>
+                        {% for employee_answer in  employee_answers %}           
+                            {% if  employee_answer.questions_id == quest.id  %}     
+                            &nbsp  &nbsp  &nbsp {{ employee_answer.user_answer }}
+                                {% if employee_answer.is_correct %}
+                                &#x2705 
+                                    {% for variant in  variants %} 
+                                        {% if variant.questions_id == employee_answer.questions_id and variant.variant == employee_answer.user_answer  %}
+                                            {% if employee_answer.in_time %}
+                                                {% if variant.answer_weight == 1 %}
+                                                {{ variant.answer_weight }}  балл<br>
+                                                {% elif variant.answer_weight < 5 %}
+                                                {{ variant.answer_weight }}  балла<br>
+                                                {% else %}
+                                                {{ variant.answer_weight }}  баллов<br>
+                                                {% endif %}
+                                            {% else %}
+                                                - 0 баллов &nbsp |Не вовремя<br>
+                                            {% endif %}
+
                                         {% endif %}
-                                    {% else %}
-                                         - 0 баллов &nbsp |Вы не уложились во время<br>
-                                    {% endif %}
-
+                                    {% endfor %}
+                                {% else %}
+                                - 0 баллов &nbsp |Не верно<br>
                                 {% endif %}
-                            {% endfor %}
-                        {% else %}
-                         - 0 баллов &nbsp |Не верно<br>
-                        {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <a href="/questionnaire/{{ questionnaire.id }}/question/{{ quest.id }}"> &nbsp ответить </a>
                     {% endif %}
-                {% endfor %}
-            {% else %}
-                 <a href="/questionnaire/{{ questionnaire.id }}/question/{{ quest.id }}"> &nbsp ответить </a>
-            {% endif %}
-                
-        {% endwith %}
-        {% endwith %}
-    {% endfor %}     
-{% endblock %}
+                        
+                {% endwith %}
+                {% endwith %}
+            {% endfor %}     
+            {% endblock %}
+       
+        </div>
+    </div>
+</div> 
 
+</body>

@@ -1,12 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
-# from django.contrib.postgres.fields import JSONField
-
-ANSWER_IS_TRUE = [
-    ('One', 'Один правильный ответ'),
-    ('Multi', 'Несколько правильных ответов'),
-]
 
 USER_TYPE = [
         ('MG', 'Менеджер'),
@@ -189,11 +183,7 @@ class EmployeeAnswer(models.Model):
         questionnaire_id = self.questionnaires.id
         user_id = self.users.user_name_id
         question_id = self.questions.id
-        # quests = Question.objects.filter(questionnaires__id=questionnaire_id)  
-        # employee_answers = EmployeeAnswer.objects.filter(users__user_name_id = user_id, questionnaires_id = questionnaire_id)
         variants = Answer.objects.filter(questions__questionnaires__users__user_name_id=user_id, questions__questionnaires__id = questionnaire_id)  
-        # for quest in quests:
-        #     if  self.questions_id == quest.id:
         for variant in variants:
             if variant.questions_id == question_id and variant.variant == self.user_answer:
                 return variant.answer_weight      
@@ -237,14 +227,9 @@ class AppointTo(models.Model):
     class Meta:
         verbose_name = ' опросник  сотруднику '
         verbose_name_plural = '№4: назначить опросник или посмотреть общие баллы'  
-
-
  
     @property
     def isOpen(self):
-        # finish = AppointTo.objects.filter(date_finish__gt=datetime.today().date(), questionnaires_id=self.id)
-        # for xxx in finish:
-        #     print(xxx.date_finish) 
         if self.date_finish >= datetime.today().date(): 
             return True
         else:
@@ -273,67 +258,3 @@ class AppointTo(models.Model):
             return  self.users.user_name.username
 
     
-
-
-
-
-# class RightAnswer(models.Model):
-#     question = models.ForeignKey(Question, null=True, related_name='good_answer', on_delete=models.CASCADE)
-#     answer = models.CharField(max_length=128, null=True)
-    
-#     class Meta:
-#         verbose_name = "Правильныйтвет"
-#         verbose_name_plural = 'Правильные ответы'
-        
-
-
-# class QuestionnaireContent(models.Model):
-#     question = models.ForeignKey(Question, null=True, on_delete=models.CASCADE, verbose_name="Вопрос")
-#     questionnaire = models.ForeignKey(Questionnaire, null=True,
-#      on_delete=models.CASCADE, verbose_name="Опросник")
-#     time_to_answer = models.SmallIntegerField("Время на ответ", default=0)
-#     answer_weight = models.SmallIntegerField("Вес ответа", default=1)
-
-#     def __str__(self):
-#         return f"{self.questionnaire} - {self.question} - {self.time_to_answer} - {self.answer_weight}"
-
-#     class Meta:
-#         verbose_name = "Содержимое опросника"
-#         verbose_name_plural = "Содержимое опросников"
-
-   
-
-# class QuestionnaireResult(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Сотрудник")
-#     questionnaire_content = models.ForeignKey(QuestionnaireContent, on_delete=models.CASCADE)
-#     answer = JSONField(default=list) # список правильных ответов по всему опроснику
-
-#     @property
-#     def score(self):
-#         question = self.questionnaire_content.question
-#         weight = self.questionnaire_content.answer_weight
-#         answerList = []
-#         if not isinstance (self.answer, list):
-#             answerList.append(self.answer)
-#         else:
-#             answerList = self.answer
-#         response = EmployeeAnswer.objects.filter(question=question)
-#         answer_score = 0
-#         for i in response:
-#             if self.questionnaire_content.question.question_type == 'CHECKBOXES':
-#                 for j in answerList:
-#                     if i.user_answer == j:
-#                         answer_score += weight
-#             if self.questionnaire_content.question.question_type == 'RADIO':
-#                 for j in answerList:
-#                     if i.user_answer == j:
-#                         if i.isCorrect:
-#                             answer_score += 1
-#                         # else:
-#                         #     answer_score -= 1
-#         return answer_score 
-#         # * self.questionnaire_content.answer_weight
-
-#     class Meta:
-#         verbose_name = "Результат по опроснику"
-#         verbose_name_plural = "Результаты по всем опросникам"

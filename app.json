@@ -1,0 +1,6 @@
+{
+  "name": "Questionnaire",
+  "description": "Questionnaire on Heroku",
+  "image": "heroku/python",
+  "keywords": ["python", "django" ]
+}

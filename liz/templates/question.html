@@ -10,42 +10,47 @@
  <br>Время на ответ {{ time_for_answer }}, сек.
  <br> Сейчас  {% now " H:i:s:u" %}
  <br>Время начачла {{ time_start }}
- 
-      <form method="post" action="details">
-            {% csrf_token %}        
-            <div><br>
-                  <b>&nbsp ВОПРОС<br>
-                     &nbsp {{ quest.question }}</b> &nbsp id:{{ quest.id }}<br>
-                  {% if quest.image.name  != ''  %} 
-                  <img src="{{ quest.image.url }}" alt="картинка к вопросу" width="300" height="200"><br><br>
-                  {% else %} #
-                  {% endif %}
-            </div> 
 
-            <div>{% for variant in variants %}
-            {% if variant.questions_id == quest.id %}      
-                            
-                  {% if object.question_type == 'Multi' %}        
-                  {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer  %}                  
-                        <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}"> &nbsp{{ variant }}<br> 
-                        <input type="hidden" name="question_id" value="{{ quest.id }}">
-                        <input type="hidden" name="questionnaire_id" value="{{ questionnaire_id }}">
-                        <input type="hidden" name="time_start" value="{{ time_start }}">   
-                        <input type="hidden" name="time_for_answer" value="{{ variant.time_for_answer }}">    
-                  {% else %}
-                        <input type="radio" name="answer_one" value="{{ variant.variant }}"> &nbsp{{ variant }} {%if variant.is_right_variant %} Yes {% endif %}<br> 
-                        <input type="hidden" name="question_id" value="{{ quest.id }}">
-                        <input type="hidden" name="questionnaire_id" value="{{ questionnaire_id }}">
-                        <input type="hidden" name="time_start" value="{{ time_start }}">   
-                        <input type="hidden" name="time_for_answer" value="{{ variant.time_for_answer }}">    
-                                               
-                  {% endif %}
-            {% endif %}                                 
-            {% endfor %}              
-                  <input type="submit" value="Отправить">
-            </div>           
-      </form>
-            
+ <div class="container">
+      <div class="row">
+          <div class="col-md-8">       
+            <form method="post" action="details">
+                  {% csrf_token %}        
+                  <div><br>
+                        <b>&nbsp ВОПРОС<br>
+                        &nbsp {{ quest.question }}</b> &nbsp id:{{ quest.id }}<br>
+                        {% if quest.image.name  != ''  %} 
+                        <img src="{{ quest.image.url }}" alt="картинка к вопросу" width="300" height="200"><br><br>
+                        {% else %} #
+                        {% endif %}
+                  </div> 
+
+                  {% for variant in variants %}
+                  {% if variant.questions_id == quest.id %}      
+                              
+                        {% if object.question_type == 'Multi' %}        
+                        {% cycle 'answer1' 'answer2' 'answer3' 'answer4' as answer  %}                  
+                              <input type="checkbox" name="{{ answer }}" value="{{ variant.variant }}"> &nbsp{{ variant }}<br> 
+                              <input type="hidden" name="question_id" value="{{ quest.id }}">
+                              <input type="hidden" name="questionnaire_id" value="{{ questionnaire_id }}">
+                              <input type="hidden" name="time_start" value="{{ time_start }}">   
+                              <input type="hidden" name="time_for_answer" value="{{ variant.time_for_answer }}">    
+                        {% else %}
+                              <input type="radio" name="answer_one" value="{{ variant.variant }}"> &nbsp{{ variant }} {%if variant.is_right_variant %} Yes {% endif %}<br> 
+                              <input type="hidden" name="question_id" value="{{ quest.id }}">
+                              <input type="hidden" name="questionnaire_id" value="{{ questionnaire_id }}">
+                              <input type="hidden" name="time_start" value="{{ time_start }}">   
+                              <input type="hidden" name="time_for_answer" value="{{ variant.time_for_answer }}">    
+                                                
+                        {% endif %}
+                  {% endif %}                                 
+                  {% endfor %}              
+                        <input type="submit" value="Отправить">
+                  </div>           
+            </form>
+            </div>
+      </div>
+</div> 
       &nbsp&nbsp___________ <br>
 
       <section>
@@ -53,26 +58,27 @@
             <p id="color"></p>
       </section>
 
-             
-      {% if employee_answers|length > 0 %}
-            {% for employee_answer in employee_answers %} 
-                  
-                        {% if forloop.first %}
-                              &nbsp ваш ответ: <br>
-                        {% endif %}
+                  {% if employee_answers|length > 0 %}
+                        {% for employee_answer in employee_answers %} 
+                              
+                                    {% if forloop.first %}
+                                          &nbsp ваш ответ: <br>
+                                    {% endif %}
 
-                        &nbsp "{{ employee_answer.user_answer }}"  
+                                    &nbsp "{{ employee_answer.user_answer }}"  
 
-                        {% if employee_answer.is_correct %}
-                              &#x2705  <br>
-                        {% endif %}
+                                    {% if employee_answer.is_correct %}
+                                          &#x2705  <br>
+                                    {% endif %}
 
-                        {% if forloop.last %}
-                              <a href="/questionnaire/{{ questionnaire_id }}">вернуться к опроснику</a>
-                        {% endif %}
-            {% endfor %}
-      {% else %}
+                                    {% if forloop.last %}
+                                          <a href="/questionnaire/{{ questionnaire_id }}">вернуться к опроснику</a>
+                                    {% endif %}
+                        {% endfor %}
 
+                 
+                  {% else %}
+      
       <script>
       const clock = document.querySelector("#clock");
 
