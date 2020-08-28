@@ -1,0 +1,2234 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.2 (Ubuntu 12.2-4)
+-- Dumped by pg_dump version 12.2 (Ubuntu 12.2-4)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_group (
+    id integer NOT NULL,
+    name character varying(150) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO postgres;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_group_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_group_id_seq OWNED BY public.auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO postgres;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_group_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_group_permissions_id_seq OWNED BY public.auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO postgres;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_permission_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_permission_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_permission_id_seq OWNED BY public.auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(150) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(150) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.auth_user OWNER TO postgres;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_groups OWNER TO postgres;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_user_groups_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_groups_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_user_groups_id_seq OWNED BY public.auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_user_id_seq OWNED BY public.auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_user_permissions OWNER TO postgres;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_user_user_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_user_permissions_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_user_user_permissions_id_seq OWNED BY public.auth_user_user_permissions.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO postgres;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.django_admin_log_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_admin_log_id_seq OWNER TO postgres;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.django_admin_log_id_seq OWNED BY public.django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO postgres;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.django_content_type_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_content_type_id_seq OWNER TO postgres;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.django_content_type_id_seq OWNED BY public.django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_migrations OWNER TO postgres;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.django_migrations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_migrations_id_seq OWNER TO postgres;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.django_migrations_id_seq OWNED BY public.django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO postgres;
+
+--
+-- Name: liz_answer; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.liz_answer (
+    id integer NOT NULL,
+    variant character varying(128),
+    is_right_variant boolean NOT NULL,
+    answer_weight smallint NOT NULL,
+    questions_id integer NOT NULL,
+    time_for_answer smallint NOT NULL,
+    questionnaires_id integer,
+    CONSTRAINT liz_answer_time_for_answer_check CHECK ((time_for_answer >= 0))
+);
+
+
+ALTER TABLE public.liz_answer OWNER TO postgres;
+
+--
+-- Name: liz_answer_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.liz_answer_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.liz_answer_id_seq OWNER TO postgres;
+
+--
+-- Name: liz_answer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.liz_answer_id_seq OWNED BY public.liz_answer.id;
+
+
+--
+-- Name: liz_appointto; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.liz_appointto (
+    id integer NOT NULL,
+    date_start date NOT NULL,
+    date_finish date NOT NULL,
+    questionnaires_id integer NOT NULL,
+    users_id integer NOT NULL
+);
+
+
+ALTER TABLE public.liz_appointto OWNER TO postgres;
+
+--
+-- Name: liz_appointto_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.liz_appointto_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.liz_appointto_id_seq OWNER TO postgres;
+
+--
+-- Name: liz_appointto_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.liz_appointto_id_seq OWNED BY public.liz_appointto.id;
+
+
+--
+-- Name: liz_employee; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.liz_employee (
+    id integer NOT NULL,
+    department character varying(100) NOT NULL,
+    user_type character varying(10),
+    user_name_id integer
+);
+
+
+ALTER TABLE public.liz_employee OWNER TO postgres;
+
+--
+-- Name: liz_employee_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.liz_employee_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.liz_employee_id_seq OWNER TO postgres;
+
+--
+-- Name: liz_employee_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.liz_employee_id_seq OWNED BY public.liz_employee.id;
+
+
+--
+-- Name: liz_employeeanswer; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.liz_employeeanswer (
+    id integer NOT NULL,
+    user_answer character varying(256),
+    is_correct boolean NOT NULL,
+    questions_id integer NOT NULL,
+    users_id integer,
+    questionnaires_id integer,
+    in_time boolean NOT NULL
+);
+
+
+ALTER TABLE public.liz_employeeanswer OWNER TO postgres;
+
+--
+-- Name: liz_employeeanswer_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.liz_employeeanswer_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.liz_employeeanswer_id_seq OWNER TO postgres;
+
+--
+-- Name: liz_employeeanswer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.liz_employeeanswer_id_seq OWNED BY public.liz_employeeanswer.id;
+
+
+--
+-- Name: liz_question; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.liz_question (
+    id integer NOT NULL,
+    question character varying(128),
+    image character varying(100),
+    question_type character varying(10) NOT NULL
+);
+
+
+ALTER TABLE public.liz_question OWNER TO postgres;
+
+--
+-- Name: liz_question_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.liz_question_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.liz_question_id_seq OWNER TO postgres;
+
+--
+-- Name: liz_question_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.liz_question_id_seq OWNED BY public.liz_question.id;
+
+
+--
+-- Name: liz_questionnaire; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.liz_questionnaire (
+    id integer NOT NULL,
+    title character varying(25),
+    description character varying(256)
+);
+
+
+ALTER TABLE public.liz_questionnaire OWNER TO postgres;
+
+--
+-- Name: liz_questionnaire_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.liz_questionnaire_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.liz_questionnaire_id_seq OWNER TO postgres;
+
+--
+-- Name: liz_questionnaire_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.liz_questionnaire_id_seq OWNED BY public.liz_questionnaire.id;
+
+
+--
+-- Name: liz_questionnaire_questions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.liz_questionnaire_questions (
+    id integer NOT NULL,
+    questionnaire_id integer NOT NULL,
+    question_id integer NOT NULL
+);
+
+
+ALTER TABLE public.liz_questionnaire_questions OWNER TO postgres;
+
+--
+-- Name: liz_questionnaire_questions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.liz_questionnaire_questions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.liz_questionnaire_questions_id_seq OWNER TO postgres;
+
+--
+-- Name: liz_questionnaire_questions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.liz_questionnaire_questions_id_seq OWNED BY public.liz_questionnaire_questions.id;
+
+
+--
+-- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group ALTER COLUMN id SET DEFAULT nextval('public.auth_group_id_seq'::regclass);
+
+
+--
+-- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_permission ALTER COLUMN id SET DEFAULT nextval('public.auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user ALTER COLUMN id SET DEFAULT nextval('public.auth_user_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_groups ALTER COLUMN id SET DEFAULT nextval('public.auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_admin_log ALTER COLUMN id SET DEFAULT nextval('public.django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_content_type ALTER COLUMN id SET DEFAULT nextval('public.django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('public.django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: liz_answer id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_answer ALTER COLUMN id SET DEFAULT nextval('public.liz_answer_id_seq'::regclass);
+
+
+--
+-- Name: liz_appointto id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_appointto ALTER COLUMN id SET DEFAULT nextval('public.liz_appointto_id_seq'::regclass);
+
+
+--
+-- Name: liz_employee id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_employee ALTER COLUMN id SET DEFAULT nextval('public.liz_employee_id_seq'::regclass);
+
+
+--
+-- Name: liz_employeeanswer id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_employeeanswer ALTER COLUMN id SET DEFAULT nextval('public.liz_employeeanswer_id_seq'::regclass);
+
+
+--
+-- Name: liz_question id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_question ALTER COLUMN id SET DEFAULT nextval('public.liz_question_id_seq'::regclass);
+
+
+--
+-- Name: liz_questionnaire id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_questionnaire ALTER COLUMN id SET DEFAULT nextval('public.liz_questionnaire_id_seq'::regclass);
+
+
+--
+-- Name: liz_questionnaire_questions id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_questionnaire_questions ALTER COLUMN id SET DEFAULT nextval('public.liz_questionnaire_questions_id_seq'::regclass);
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_group (id, name) FROM stdin;
+1	Managers
+\.
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
+1	1	1
+2	1	2
+3	1	3
+4	1	4
+5	1	5
+6	1	6
+7	1	7
+8	1	8
+9	1	9
+10	1	10
+11	1	11
+12	1	12
+13	1	13
+14	1	14
+15	1	15
+16	1	16
+17	1	17
+18	1	18
+19	1	19
+20	1	20
+21	1	21
+22	1	22
+23	1	23
+24	1	24
+25	1	25
+26	1	26
+27	1	27
+28	1	28
+29	1	29
+30	1	30
+31	1	31
+32	1	32
+33	1	33
+34	1	34
+35	1	35
+36	1	36
+37	1	37
+38	1	38
+39	1	39
+40	1	40
+41	1	41
+42	1	42
+43	1	43
+44	1	44
+45	1	45
+46	1	46
+47	1	47
+48	1	48
+49	1	49
+50	1	50
+51	1	51
+52	1	52
+\.
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can view log entry	1	view_logentry
+5	Can add permission	2	add_permission
+6	Can change permission	2	change_permission
+7	Can delete permission	2	delete_permission
+8	Can view permission	2	view_permission
+9	Can add group	3	add_group
+10	Can change group	3	change_group
+11	Can delete group	3	delete_group
+12	Can view group	3	view_group
+13	Can add user	4	add_user
+14	Can change user	4	change_user
+15	Can delete user	4	delete_user
+16	Can view user	4	view_user
+17	Can add content type	5	add_contenttype
+18	Can change content type	5	change_contenttype
+19	Can delete content type	5	delete_contenttype
+20	Can view content type	5	view_contenttype
+21	Can add session	6	add_session
+22	Can change session	6	change_session
+23	Can delete session	6	delete_session
+24	Can view session	6	view_session
+25	Can add Сотрудник	7	add_employee
+26	Can change Сотрудник	7	change_employee
+27	Can delete Сотрудник	7	delete_employee
+28	Can view Сотрудник	7	view_employee
+29	Can add Вопрос	8	add_question
+30	Can change Вопрос	8	change_question
+31	Can delete Вопрос	8	delete_question
+32	Can view Вопрос	8	view_question
+33	Can add Опросник	9	add_questionnaire
+34	Can change Опросник	9	change_questionnaire
+35	Can delete Опросник	9	delete_questionnaire
+36	Can view Опросник	9	view_questionnaire
+37	Can add ответ сотрудника	10	add_employeeanswer
+38	Can change ответ сотрудника	10	change_employeeanswer
+39	Can delete ответ сотрудника	10	delete_employeeanswer
+40	Can view ответ сотрудника	10	view_employeeanswer
+41	Can add 4) Опросники открытые	11	add_apointmentto
+42	Can change 4) Опросники открытые	11	change_apointmentto
+43	Can delete 4) Опросники открытые	11	delete_apointmentto
+44	Can view 4) Опросники открытые	11	view_apointmentto
+45	Can add 4) Опросники открытые	12	add_appointto
+46	Can change 4) Опросники открытые	12	change_appointto
+47	Can delete 4) Опросники открытые	12	delete_appointto
+48	Can view 4) Опросники открытые	12	view_appointto
+49	Can add Ответ	13	add_answer
+50	Can change Ответ	13	change_answer
+51	Can delete Ответ	13	delete_answer
+52	Can view Ответ	13	view_answer
+\.
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+2	pbkdf2_sha256$180000$ChMoITgh7jGe$hXIk8jHHDJfEhrhlpBMVHjDGR0jP2X60boJwSA/kt8E=	\N	f	user3				f	t	2020-06-23 13:17:52.425037+03
+5	pbkdf2_sha256$180000$DZmJsayiPN1W$Wz4PDluyrFJzojXBBa5J+8gjHcJ9UqJnyumGVXGai0I=	2020-08-18 15:54:14.673219+03	f	manager				t	t	2020-06-24 19:23:38+03
+4	pbkdf2_sha256$180000$qlntVtl63zw7$KryLngrX2yMKb0386S2GatQBsDP5VcB9p+QwAq15too=	2020-08-20 18:58:44.080453+03	f	user2				f	t	2020-06-24 13:21:07.985188+03
+1	pbkdf2_sha256$180000$ElOWYp8syLSy$imwXm/0o2oqbZkCCth5SqxHjNnCkol9f3UmGTXt2TAM=	2020-08-24 19:25:54.154946+03	t	user			sds@sds.jhh	t	t	2020-06-23 13:10:02.439257+03
+3	pbkdf2_sha256$180000$VGO3s37AtnjC$H/KSpSCeXsjv0kaRuZ0CzQDir11yGgsVzGtVYDLlXZo=	2020-08-10 18:15:54.497626+03	f	user1				f	t	2020-06-24 13:19:19.305719+03
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_user_groups (id, user_id, group_id) FROM stdin;
+1	5	1
+\.
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2020-06-23 13:11:32.524522+03	1	2+2=?	1	[{"added": {}}]	8	1
+2	2020-06-23 13:12:21.131944+03	2	5+5=?	1	[{"added": {}}]	8	1
+3	2020-06-23 13:17:52.64926+03	2	user3	1	[{"added": {}}]	4	1
+4	2020-06-23 13:18:00.537344+03	1	user3	1	[{"added": {}}]	7	1
+5	2020-06-23 13:18:22.925215+03	1	Математика	1	[{"added": {}}]	9	1
+6	2020-06-23 13:18:55.827306+03	1	Математика	2	[{"changed": {"fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+7	2020-06-23 13:31:20.921342+03	3	user3	1	[{"added": {}}]	10	1
+8	2020-06-23 13:32:15.497744+03	3	user3	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b", "\\u041e\\u0442\\u0432\\u0435\\u0442 \\u043d\\u0430 \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441", "Is correct"]}}]	10	1
+9	2020-06-23 13:35:59.66878+03	3	Who is the bigest on the earth?	1	[{"added": {}}]	8	1
+10	2020-06-23 13:39:00.194136+03	4	What is the capital of Belarus?	1	[{"added": {}}]	8	1
+11	2020-06-23 13:39:15.3316+03	2	Английский	1	[{"added": {}}]	9	1
+12	2020-06-23 13:39:52.485542+03	2	Английский	2	[]	9	1
+13	2020-06-23 13:40:01.715769+03	2	Английский	2	[]	9	1
+14	2020-06-23 13:41:47.301488+03	3	user3	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a", "\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b", "\\u041e\\u0442\\u0432\\u0435\\u0442 \\u043d\\u0430 \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441", "Is correct"]}}]	10	1
+15	2020-06-23 13:42:10.433815+03	3	user3	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b", "\\u041e\\u0442\\u0432\\u0435\\u0442 \\u043d\\u0430 \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441", "Is correct"]}}]	10	1
+16	2020-06-23 15:03:21.886476+03	1	ApointmentTo object (1)	1	[{"added": {}}]	11	1
+17	2020-06-23 15:25:16.809827+03	1	AppointTo object (1)	1	[{"added": {}}]	12	1
+18	2020-06-23 15:27:02.706212+03	2	AppointTo object (2)	1	[{"added": {}}]	12	1
+19	2020-06-23 16:23:08.783534+03	2	AppointTo object (2)	2	[{"changed": {"fields": ["\\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a"]}}]	12	1
+20	2020-06-24 15:58:25.866078+03	4	user2	1	[{"added": {}}]	7	1
+21	2020-06-24 16:20:12.529343+03	3	EmployeeAnswer object (3)	2	[{"changed": {"fields": ["\\u0421\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0438", "\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a", "\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b", "\\u041e\\u0442\\u0432\\u0435\\u0442 \\u043d\\u0430 \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441"]}}]	10	1
+22	2020-06-24 16:20:44.345632+03	4	EmployeeAnswer object (4)	1	[{"added": {}}]	10	1
+23	2020-06-24 16:21:24.747442+03	5	EmployeeAnswer object (5)	1	[{"added": {}}]	10	1
+24	2020-06-24 17:47:06.818412+03	6	EmployeeAnswer object (6)	1	[{"added": {}}]	10	1
+25	2020-06-24 17:47:40.280895+03	6	EmployeeAnswer object (6)	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a"]}}]	10	1
+26	2020-06-24 19:23:38.703503+03	5	manager	1	[{"added": {}}]	4	1
+27	2020-06-24 19:24:09.998681+03	5	manager	1	[{"added": {}}]	7	1
+28	2020-06-24 19:26:51.776988+03	1	Managers	1	[{"added": {}}]	3	1
+29	2020-06-24 19:27:51.662444+03	5	manager	2	[{"changed": {"fields": ["Staff status"]}}]	4	1
+30	2020-06-24 19:31:28.555235+03	5	manager	2	[{"changed": {"fields": ["Groups"]}}]	4	1
+31	2020-06-25 09:26:22.409227+03	5	user2	3		10	5
+32	2020-06-25 12:31:21.336355+03	6	user2	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a", "\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b", "\\u041e\\u0442\\u0432\\u0435\\u0442 \\u043d\\u0430 \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441", "Is correct"]}}]	10	5
+33	2020-06-25 12:47:03.21382+03	3	Employee object (3)	2	[{"changed": {"fields": ["User name", "User type"]}}]	7	5
+34	2020-06-25 12:50:39.73452+03	3	AppointTo object (3)	1	[{"added": {}}]	12	5
+35	2020-06-25 12:51:08.521518+03	4	AppointTo object (4)	1	[{"added": {}}]	12	5
+36	2020-06-25 12:51:24.479938+03	2	AppointTo object (2)	2	[{"changed": {"fields": ["\\u0421\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a"]}}]	12	5
+37	2020-06-25 12:51:34.996105+03	3	AppointTo object (3)	2	[{"changed": {"fields": ["\\u0421\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a"]}}]	12	5
+38	2020-06-25 12:54:54.838893+03	10	manager	1	[{"added": {}}]	10	5
+39	2020-06-25 12:55:15.14278+03	10	user1	2	[{"changed": {"fields": ["\\u0421\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0438", "\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a"]}}]	10	5
+40	2020-06-25 12:55:47.306591+03	4	user3	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a", "\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b", "\\u041e\\u0442\\u0432\\u0435\\u0442 \\u043d\\u0430 \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441", "Is correct"]}}]	10	5
+41	2020-06-25 13:03:51.012305+03	11	user1	1	[{"added": {}}]	10	5
+42	2020-06-25 13:04:54.681132+03	5	AppointTo object (5)	1	[{"added": {}}]	12	5
+43	2020-06-25 13:05:08.821797+03	5	AppointTo object (5)	2	[{"changed": {"fields": ["\\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a"]}}]	12	5
+44	2020-06-25 13:10:42.30942+03	5	Нравиться ли вам условия работы?	1	[{"added": {}}]	8	5
+45	2020-06-25 13:18:36.71889+03	6	Что бы вы поменяли в графике работы?	1	[{"added": {}}]	8	5
+46	2020-06-25 13:19:07.269592+03	3	Общий	1	[{"added": {}}]	9	5
+47	2020-06-25 14:09:58.95313+03	12	user3	1	[{"added": {}}]	10	5
+48	2020-06-25 14:10:40.479052+03	13	user3	1	[{"added": {}}]	10	5
+49	2020-06-25 16:24:04.761584+03	5	Нравиться ли вам условия работы?	2	[{"changed": {"fields": ["Answer right"]}}]	8	5
+50	2020-06-26 09:29:34.585375+03	6	Что бы вы поменяли в графике работы?	2	[{"changed": {"fields": ["\\u0411\\u0430\\u043b\\u043b\\u044b \\u0437\\u0430 \\u043e\\u0442\\u0432\\u0435\\u0442"]}}]	8	5
+51	2020-06-26 09:39:01.719993+03	6	Что бы вы поменяли в графике работы?	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}]	8	5
+52	2020-06-26 13:43:59.275822+03	1	user3	2	[{"added": {"name": " \\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a \\u0443 \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0430 ", "object": "AppointTo object (15)"}}, {"added": {"name": " \\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a \\u0443 \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0430 ", "object": "AppointTo object (16)"}}, {"added": {"name": " \\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a \\u0443 \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0430 ", "object": "AppointTo object (17)"}}]	7	5
+53	2020-06-26 13:45:34.340886+03	1	user3	3		7	5
+54	2020-06-26 14:32:53.35902+03	4	user2	2	[{"added": {"name": " \\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a \\u0443 \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0430 ", "object": "AppointTo object (20)"}}]	7	5
+140	2020-07-10 16:08:40.869086+03	63	user	3		10	1
+141	2020-07-10 16:08:40.957127+03	62	user	3		10	1
+142	2020-07-10 16:08:40.96829+03	61	user	3		10	1
+55	2020-06-26 14:35:04.335005+03	6	user3	1	[{"added": {}}, {"added": {"name": " \\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a \\u0443 \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0430 ", "object": "AppointTo object (21)"}}]	7	5
+56	2020-06-26 14:36:04.835748+03	6	user3	2	[{"added": {"name": " \\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a \\u0443 \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0430 ", "object": "AppointTo object (22)"}}]	7	5
+57	2020-06-26 14:36:27.160031+03	6	user3	2	[{"added": {"name": " \\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a \\u0443 \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0430 ", "object": "AppointTo object (23)"}}]	7	5
+58	2020-06-26 14:40:31.920444+03	3	Who is the bigest on the earth?	2	[{"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442\\u044b \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0430", "object": "user3"}}]	8	5
+59	2020-06-26 14:50:30.067223+03	7	Очените опрос по 4 бальной шкале	1	[{"added": {}}]	8	5
+60	2020-06-26 14:51:45.399379+03	3	Общий	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	5
+61	2020-06-26 14:52:04.891619+03	2	Английский	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	5
+62	2020-06-26 14:52:10.64892+03	1	Математика	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	5
+63	2020-06-29 12:34:39.854147+03	7	Очените опрос по 4 бальной шкале	2	[{"changed": {"fields": ["\\u0412\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442\\u044b \\u043e\\u0442\\u0432\\u0435\\u0442\\u043e\\u0432 (\\u0441\\u0440\\u0435\\u0434\\u0438 \\u043d\\u0438\\u0445 \\u0434\\u043e\\u043b\\u0436\\u0435\\u043d \\u0431\\u044b\\u0442\\u044c \\u0438 \\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0439)"]}}]	8	5
+64	2020-06-29 12:35:19.523467+03	6	Что бы вы поменяли в графике работы?	2	[{"changed": {"fields": ["\\u0412\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442\\u044b \\u043e\\u0442\\u0432\\u0435\\u0442\\u043e\\u0432 (\\u0441\\u0440\\u0435\\u0434\\u0438 \\u043d\\u0438\\u0445 \\u0434\\u043e\\u043b\\u0436\\u0435\\u043d \\u0431\\u044b\\u0442\\u044c \\u0438 \\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0439)"]}}]	8	5
+65	2020-06-29 12:35:33.177376+03	5	Нравиться ли вам условия работы?	2	[{"changed": {"fields": ["\\u0412\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442\\u044b \\u043e\\u0442\\u0432\\u0435\\u0442\\u043e\\u0432 (\\u0441\\u0440\\u0435\\u0434\\u0438 \\u043d\\u0438\\u0445 \\u0434\\u043e\\u043b\\u0436\\u0435\\u043d \\u0431\\u044b\\u0442\\u044c \\u0438 \\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0439)"]}}]	8	5
+66	2020-06-29 12:36:52.743628+03	4	What is the capital of Belarus?	2	[{"changed": {"fields": ["\\u0412\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442\\u044b \\u043e\\u0442\\u0432\\u0435\\u0442\\u043e\\u0432 (\\u0441\\u0440\\u0435\\u0434\\u0438 \\u043d\\u0438\\u0445 \\u0434\\u043e\\u043b\\u0436\\u0435\\u043d \\u0431\\u044b\\u0442\\u044c \\u0438 \\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0439)"]}}]	8	5
+67	2020-06-29 12:38:11.177597+03	3	Who is the bigest on the earth?	2	[{"changed": {"fields": ["\\u0412\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442\\u044b \\u043e\\u0442\\u0432\\u0435\\u0442\\u043e\\u0432 (\\u0441\\u0440\\u0435\\u0434\\u0438 \\u043d\\u0438\\u0445 \\u0434\\u043e\\u043b\\u0436\\u0435\\u043d \\u0431\\u044b\\u0442\\u044c \\u0438 \\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0439)"]}}]	8	5
+68	2020-06-29 12:39:48.774522+03	2	5+5*3=?	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441", "\\u041f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0435 \\u043e\\u0442\\u0432\\u0435\\u0442\\u044b", "\\u0412\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442\\u044b \\u043e\\u0442\\u0432\\u0435\\u0442\\u043e\\u0432 (\\u0441\\u0440\\u0435\\u0434\\u0438 \\u043d\\u0438\\u0445 \\u0434\\u043e\\u043b\\u0436\\u0435\\u043d \\u0431\\u044b\\u0442\\u044c \\u0438 \\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0439)"]}}]	8	5
+69	2020-06-29 12:41:37.05449+03	1	2/7+5/7=?	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441", "\\u041f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0435 \\u043e\\u0442\\u0432\\u0435\\u0442\\u044b", "\\u0412\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442\\u044b \\u043e\\u0442\\u0432\\u0435\\u0442\\u043e\\u0432 (\\u0441\\u0440\\u0435\\u0434\\u0438 \\u043d\\u0438\\u0445 \\u0434\\u043e\\u043b\\u0436\\u0435\\u043d \\u0431\\u044b\\u0442\\u044c \\u0438 \\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0439)"]}}]	8	5
+70	2020-06-29 12:46:21.472492+03	8	Какой операционной системой владеете?	1	[{"added": {}}]	8	5
+71	2020-06-29 12:47:23.306067+03	1	2/7+5/7=?	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}]	8	5
+72	2020-06-29 12:47:56.797645+03	1	2/7+5/7=?	2	[{"changed": {"fields": ["\\u041f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0435 \\u043e\\u0442\\u0432\\u0435\\u0442\\u044b"]}}]	8	5
+73	2020-06-29 12:59:16.646623+03	3	Общий	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	5
+74	2020-06-29 13:35:35.501655+03	8	Какой операционной системой владеете?	2	[{"changed": {"fields": ["\\u041f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0435 \\u043e\\u0442\\u0432\\u0435\\u0442\\u044b", "\\u0412\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442\\u044b \\u043e\\u0442\\u0432\\u0435\\u0442\\u043e\\u0432 (\\u0432 \\u0442\\u043e\\u043c \\u0447\\u0438\\u0441\\u043b\\u0435 \\u0432\\u0441\\u0435 \\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0435)"]}}]	8	5
+75	2020-06-30 14:10:30.300544+03	8	Какой операционной системой владеете?	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "Windows-10"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "System X"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "Linux"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "X3-DOS"}}]	8	1
+76	2020-06-30 14:11:02.988896+03	8	Какой операционной системой владеете?	2	[{"changed": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "Linux", "fields": ["\\u0411\\u0430\\u043b\\u043b\\u044b"]}}]	8	1
+77	2020-06-30 15:07:14.046991+03	8	Какой операционной системой владеете?	2	[]	8	1
+78	2020-06-30 15:08:32.249114+03	8	Какой операционной системой владеете?	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}]	8	1
+79	2020-06-30 15:09:04.482608+03	7	Очените опрос по 4 бальной шкале	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "1"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "2"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "3"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "4"}}]	8	1
+143	2020-07-13 12:32:48.407178+03	69	user	3		10	1
+144	2020-07-13 12:32:48.732419+03	68	user	3		10	1
+80	2020-06-30 15:10:59.267301+03	6	Что бы вы поменяли в графике работы?	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "\\u043d\\u0438\\u0447\\u0435\\u0433\\u043e"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "\\u0441\\u0434\\u0432\\u0438\\u043d\\u0443\\u0442\\u044c \\u043d\\u0430  1 \\u0440\\u0430\\u043d\\u044c\\u0448\\u0435"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "\\u0443\\u043a\\u043e\\u0440\\u0442\\u0438\\u0442\\u044c \\u043d\\u0430 1 \\u0447\\u0430\\u0441"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "\\u0440\\u0430\\u0431\\u043e\\u0442\\u0430\\u0442\\u044c 4 \\u0434\\u043d\\u044f"}}]	8	1
+81	2020-06-30 15:12:03.350895+03	5	Нравиться ли вам условия работы?	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "\\u0434\\u0430"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "\\u043d\\u0435\\u0442"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "\\u0441\\u043a\\u043e\\u0440\\u0435\\u0435 \\u0434\\u0430"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "\\u0441\\u043a\\u043e\\u0440\\u0435\\u0435 \\u043d\\u0435\\u0442"}}]	8	1
+82	2020-06-30 15:12:45.10412+03	4	What is the capital of Belarus?	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "Abudabi"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "Moscow"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "Minsk"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "Bilnus"}}]	8	1
+83	2020-06-30 15:15:09.098249+03	3	Who is the bigest on the earth?	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "gippopothamus"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "indian elephant"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "whale"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "cash a lot)"}}]	8	1
+84	2020-06-30 15:15:53.578768+03	2	5+5*3=?	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "10"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "15"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "20"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "30"}}]	8	1
+85	2020-06-30 15:16:35.356406+03	1	2/7+5/7=?	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "1"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "7/7"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "7/14"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "\\u0432\\u0441\\u0435 \\u043d\\u0435\\u043f\\u0440\\u0430\\u0432\\u0438\\u043b\\u044c\\u043d\\u044b\\u0435"}}]	8	1
+86	2020-06-30 15:17:10.311665+03	1	Managers	2	[{"changed": {"fields": ["Permissions"]}}]	3	1
+87	2020-07-01 17:38:02.652783+03	3	user	2	[{"changed": {"fields": ["Is correct"]}}]	10	1
+88	2020-07-02 14:17:41.219293+03	16	user	1	[{"added": {}}]	10	1
+89	2020-07-02 14:18:29.489138+03	17	user	1	[{"added": {}}]	10	1
+90	2020-07-09 11:25:07.333973+03	18	user	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a"]}}]	10	1
+91	2020-07-09 11:25:28.391379+03	18	user	3		10	1
+92	2020-07-09 11:25:28.461114+03	17	user	3		10	1
+93	2020-07-09 11:25:28.472253+03	16	user	3		10	1
+94	2020-07-09 11:42:29.430059+03	9	Ваш опыт в разработке	1	[{"added": {}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "Studient"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "Unior"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "Midl"}}, {"added": {"name": "\\u041e\\u0442\\u0432\\u0435\\u0442", "object": "Senior"}}]	8	1
+95	2020-07-09 11:43:51.137836+03	9	Ваш опыт в разработке	2	[{"changed": {"fields": ["\\u0411\\u0430\\u043b\\u043b\\u044b"]}}]	8	1
+96	2020-07-09 11:45:59.27207+03	3	Общий	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}, {"added": {"name": " \\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a \\u0443 \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0430 ", "object": "AppointTo object (25)"}}]	9	1
+97	2020-07-09 11:58:29.485142+03	20	user	3		10	1
+98	2020-07-09 11:58:29.523115+03	19	user	3		10	1
+99	2020-07-09 12:15:26.170514+03	24	user	3		10	1
+100	2020-07-09 12:15:26.206951+03	23	user	3		10	1
+101	2020-07-09 12:15:26.217786+03	22	user	3		10	1
+102	2020-07-09 12:15:26.228781+03	21	user	3		10	1
+103	2020-07-09 13:57:18.933534+03	27	user	3		10	1
+104	2020-07-09 13:57:18.970595+03	26	user	3		10	1
+105	2020-07-09 13:57:18.981543+03	25	user	3		10	1
+106	2020-07-09 16:17:00.781319+03	29	user	3		10	1
+107	2020-07-09 16:17:00.807153+03	28	user	3		10	1
+108	2020-07-09 16:43:43.516381+03	31	user	3		10	1
+109	2020-07-09 16:43:43.55844+03	30	user	3		10	1
+110	2020-07-09 17:13:49.038353+03	41	user	3		10	1
+111	2020-07-09 17:13:49.068607+03	40	user	3		10	1
+112	2020-07-09 17:13:49.079063+03	39	user	3		10	1
+113	2020-07-09 17:13:49.090262+03	38	user	3		10	1
+114	2020-07-09 17:13:49.101408+03	37	user	3		10	1
+115	2020-07-09 17:13:49.112398+03	36	user	3		10	1
+116	2020-07-09 17:13:49.123653+03	35	user	3		10	1
+117	2020-07-09 17:13:49.134794+03	34	user	3		10	1
+118	2020-07-09 17:13:49.145812+03	33	user	3		10	1
+119	2020-07-09 17:13:49.157109+03	32	user	3		10	1
+120	2020-07-10 11:02:22.83191+03	47	user	3		10	1
+121	2020-07-10 11:02:22.965887+03	46	user	3		10	1
+122	2020-07-10 11:02:22.976562+03	45	user	3		10	1
+123	2020-07-10 11:02:22.987371+03	44	user	3		10	1
+124	2020-07-10 11:02:22.998632+03	43	user	3		10	1
+125	2020-07-10 11:02:23.009438+03	42	user	3		10	1
+126	2020-07-10 16:00:41.466376+03	50	user	3		10	1
+127	2020-07-10 16:00:41.55027+03	49	user	3		10	1
+128	2020-07-10 16:00:41.579479+03	48	user	3		10	1
+129	2020-07-10 16:01:14.73355+03	51	user	3		10	1
+130	2020-07-10 16:06:46.140066+03	60	user	3		10	1
+131	2020-07-10 16:06:46.187428+03	59	user	3		10	1
+132	2020-07-10 16:06:46.198075+03	58	user	3		10	1
+133	2020-07-10 16:06:46.209499+03	57	user	3		10	1
+134	2020-07-10 16:06:46.220597+03	56	user	3		10	1
+135	2020-07-10 16:06:46.231614+03	55	user	3		10	1
+136	2020-07-10 16:06:46.242953+03	54	user	3		10	1
+137	2020-07-10 16:06:46.253793+03	53	user	3		10	1
+138	2020-07-10 16:06:46.26499+03	52	user	3		10	1
+139	2020-07-10 16:08:40.791322+03	64	user	3		10	1
+145	2020-07-13 12:32:48.743337+03	67	user	3		10	1
+146	2020-07-13 12:32:48.776766+03	66	user	3		10	1
+147	2020-07-13 12:32:48.787821+03	65	user	3		10	1
+148	2020-07-13 12:33:48.486323+03	71	user	3		10	1
+149	2020-07-13 12:33:48.533716+03	70	user	3		10	1
+150	2020-07-13 12:47:21.119797+03	79	user	3		10	1
+151	2020-07-13 12:47:21.158667+03	78	user	3		10	1
+152	2020-07-13 12:47:21.169635+03	77	user	3		10	1
+153	2020-07-13 12:47:21.180704+03	76	user	3		10	1
+154	2020-07-13 12:47:21.191713+03	75	user	3		10	1
+155	2020-07-13 12:47:21.203038+03	74	user	3		10	1
+156	2020-07-13 12:47:21.214052+03	73	user	3		10	1
+157	2020-07-13 12:47:21.225169+03	72	user	3		10	1
+158	2020-07-13 13:04:28.608446+03	82	user	3		10	1
+159	2020-07-13 13:04:28.685727+03	81	user	3		10	1
+160	2020-07-13 13:04:28.730217+03	80	user	3		10	1
+161	2020-07-13 13:12:40.907351+03	84	user	3		10	1
+162	2020-07-13 13:12:40.948645+03	83	user	3		10	1
+163	2020-07-16 14:07:17.644278+03	94	user	3		10	1
+164	2020-07-16 14:07:17.763784+03	93	user	3		10	1
+165	2020-07-16 14:07:17.775404+03	92	user	3		10	1
+166	2020-07-16 14:07:17.78612+03	91	user	3		10	1
+167	2020-07-16 14:07:17.797028+03	90	user	3		10	1
+168	2020-07-16 14:07:17.808387+03	89	user	3		10	1
+169	2020-07-16 14:07:17.819639+03	88	user	3		10	1
+170	2020-07-16 14:07:17.830676+03	87	user	3		10	1
+171	2020-07-16 14:07:17.841687+03	86	user	3		10	1
+172	2020-07-16 14:07:17.852952+03	85	user	3		10	1
+173	2020-07-16 17:20:24.859771+03	25	AppointTo object (25)	3		12	1
+174	2020-07-16 17:20:24.934306+03	4	AppointTo object (4)	3		12	1
+175	2020-07-16 17:20:57.649391+03	26	AppointTo object (26)	1	[{"added": {}}]	12	1
+176	2020-07-16 20:31:43.568278+03	27	AppointTo object (27)	1	[{"added": {}}]	12	1
+177	2020-07-16 20:48:38.212894+03	28	AppointTo object (28)	1	[{"added": {}}]	12	1
+178	2020-07-16 20:49:08.106116+03	28	AppointTo object (28)	2	[{"changed": {"fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u0447\\u0430\\u043b\\u0430 \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430", "\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	12	1
+179	2020-07-17 13:23:16.161634+03	95	user	3		10	1
+180	2020-07-17 13:23:16.367666+03	3	user	3		10	1
+181	2020-07-17 13:42:24.337977+03	28	AppointTo object (28)	3		12	1
+182	2020-07-17 13:42:24.383296+03	27	AppointTo object (27)	3		12	1
+183	2020-07-17 13:42:24.394239+03	26	AppointTo object (26)	3		12	1
+184	2020-07-17 13:47:04.20205+03	29	AppointTo object (29)	1	[{"added": {}}]	12	1
+185	2020-07-17 13:47:20.866812+03	30	AppointTo object (30)	1	[{"added": {}}]	12	1
+186	2020-07-17 13:47:55.804903+03	31	AppointTo object (31)	1	[{"added": {}}]	12	1
+187	2020-07-17 17:06:13.26949+03	103	user	3		10	1
+188	2020-07-17 17:06:13.582257+03	102	user	3		10	1
+189	2020-07-17 17:06:13.60713+03	101	user	3		10	1
+190	2020-07-17 17:06:13.617974+03	100	user	3		10	1
+191	2020-07-17 17:06:13.62905+03	99	user	3		10	1
+192	2020-07-17 17:06:13.640223+03	98	user	3		10	1
+193	2020-07-17 17:06:13.65102+03	97	user	3		10	1
+194	2020-07-17 17:06:13.662556+03	96	user	3		10	1
+195	2020-07-17 17:18:05.956099+03	105	user	3		10	1
+196	2020-07-17 17:18:06.000385+03	104	user	3		10	1
+197	2020-07-18 17:03:54.188635+03	5	jhgj	1	[{"added": {}}, {"added": {"name": " \\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a \\u0443 \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0430 ", "object": "AppointTo object (33)"}}]	9	1
+198	2020-07-20 15:56:54.764146+03	5	Артем	2	[{"changed": {"fields": ["\\u041d\\u0430\\u0437\\u0432\\u0430\\u043d\\u0438\\u0435 \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0430", "\\u041e\\u043f\\u0438\\u0441\\u0430\\u043d\\u0438\\u0435"]}}, {"added": {"name": " \\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a \\u0443 \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0430 ", "object": "AppointTo object (35)"}}, {"changed": {"name": " \\u041e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a \\u0443 \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0430 ", "object": "AppointTo object (33)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+199	2020-07-20 15:57:41.597497+03	35	AppointTo object (35)	2	[]	12	1
+200	2020-07-20 16:00:32.803127+03	35	AppointTo object (35)	3		12	1
+201	2020-07-20 16:00:32.838235+03	33	AppointTo object (33)	3		12	1
+202	2020-07-20 16:01:03.02462+03	36	AppointTo object (36)	1	[{"added": {}}]	12	1
+203	2020-07-21 11:17:04.639376+03	9	Ваш опыт в разработке	2	[]	8	1
+204	2020-07-21 11:23:45.916894+03	5	Артем	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+205	2020-07-21 12:36:30.776677+03	31	AppointTo object (31)	3		12	1
+206	2020-07-21 12:36:30.816309+03	29	AppointTo object (29)	3		12	1
+207	2020-07-21 12:44:43.392252+03	38	AppointTo object (38)	1	[{"added": {}}]	12	1
+208	2020-07-22 16:02:56.706973+03	117	user	3		10	1
+209	2020-07-22 16:02:56.816739+03	115	user	3		10	1
+210	2020-07-22 16:03:25.871272+03	116	user	3		10	1
+211	2020-07-22 16:50:57.076424+03	119	user	3		10	1
+212	2020-07-22 16:51:51.749321+03	120	user	1	[{"added": {}}]	10	1
+213	2020-07-22 17:04:34.856153+03	120	user	3		10	1
+214	2020-07-22 17:05:20.934169+03	5	Артем	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+215	2020-07-22 19:23:37.071104+03	2	5+5*3=?	3		8	1
+216	2020-07-22 19:29:46.392972+03	10	2+2=?	1	[{"added": {}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "2"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "4"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "1"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "8"}}]	8	1
+217	2020-07-22 19:36:57.16721+03	9	Ваш опыт в разработке	2	[{"changed": {"fields": ["Image"]}}]	8	1
+218	2020-07-22 19:39:16.239085+03	1	Математика	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+219	2020-07-23 10:41:33.313567+03	9	Ваш опыт в разработке	2	[{"changed": {"fields": ["Image"]}}]	8	1
+220	2020-07-23 10:41:58.613427+03	10	2+2=?	2	[{"changed": {"fields": ["Image"]}}]	8	1
+221	2020-07-23 10:46:22.98231+03	10	2+2=?	2	[{"changed": {"fields": ["Image"]}}]	8	1
+222	2020-07-23 10:47:07.674423+03	10	2+2=?	2	[]	8	1
+223	2020-07-23 10:48:37.168578+03	1	Математика	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+224	2020-07-23 10:48:45.628371+03	1	Математика	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+225	2020-07-23 10:49:25.889355+03	10	2+2=?	3		8	1
+226	2020-07-23 10:50:08.904899+03	11	2+2=?	1	[{"added": {}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "1"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "2"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "4"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "8"}}]	8	1
+227	2020-07-23 11:01:50.155528+03	9	Ваш опыт в разработке	2	[{"changed": {"fields": ["Image"]}}]	8	1
+228	2020-07-23 11:02:30.869971+03	8	Какой операционной системой владеете?	2	[{"changed": {"fields": ["Image"]}}]	8	1
+229	2020-07-23 11:05:35.565277+03	1	Математика	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+230	2020-07-24 09:51:01.527929+03	1	Математика	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (30)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u0447\\u0430\\u043b\\u0430 \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430", "\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+231	2020-07-24 10:09:37.27899+03	5	Артем	2	[]	9	1
+232	2020-07-24 10:10:46.104907+03	5	Артем	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (36)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+233	2020-07-24 10:11:20.538569+03	5	Артем	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (36)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+234	2020-07-24 10:11:32.631523+03	1	Математика	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (30)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+235	2020-07-24 11:21:54.93204+03	1	Математика	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (30)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+236	2020-07-24 11:28:10.340848+03	5	Артем	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (36)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+237	2020-07-24 14:06:35.993248+03	5	Артем	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (36)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+238	2020-07-24 14:10:04.514357+03	5	Артем	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (36)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+239	2020-07-24 14:21:04.454827+03	5	Артем	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (36)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+240	2020-07-24 14:21:28.855376+03	5	Артем	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (36)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+241	2020-07-24 14:40:02.885037+03	5	Артем	2	[]	9	1
+242	2020-07-24 14:40:25.466547+03	5	Артем	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (36)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+243	2020-07-24 14:40:54.521646+03	5	Артем	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (36)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+244	2020-07-24 14:45:55.404237+03	1	Математика	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (30)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+245	2020-07-24 14:46:07.460262+03	3	Общий	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (38)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+246	2020-07-24 14:46:30.584732+03	2	Английский	2	[{"added": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (39)"}}]	9	1
+301	2020-08-18 14:05:32.785332+03	205	user	3		10	1
+303	2020-08-18 14:21:54.200394+03	11	2+2=?	2	[]	8	1
+306	2020-08-18 15:25:51.60562+03	207	user	3		10	1
+308	2020-08-18 15:32:57.023169+03	193	user2	3		10	1
+247	2020-07-24 14:46:56.587084+03	1	Математика	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (30)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+248	2020-07-24 15:50:07.514877+03	39	AppointTo object (39)	2	[{"changed": {"fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	12	1
+249	2020-07-24 15:50:14.550967+03	38	AppointTo object (38)	2	[{"changed": {"fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	12	1
+250	2020-07-24 15:55:01.416327+03	39	AppointTo object (39)	2	[]	12	1
+251	2020-07-24 16:26:02.086048+03	39	AppointTo object (39)	2	[{"changed": {"fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	12	1
+252	2020-07-24 16:33:44.351575+03	38	AppointTo object (38)	2	[{"changed": {"fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	12	1
+253	2020-07-27 17:37:54.198964+03	2	Английский	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+254	2020-07-27 18:10:53.486944+03	2	Английский	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+255	2020-07-27 18:12:56.594083+03	5	Артем	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+256	2020-07-27 18:13:22.126883+03	5	Артем	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (36)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	9	1
+257	2020-07-27 18:15:26.135022+03	12	3+3	1	[{"added": {}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "3"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "5"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "6"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "7"}}]	8	1
+258	2020-07-27 18:15:32.277738+03	5	Артем	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+259	2020-07-27 18:43:45.463825+03	12	3+3	3		8	1
+260	2020-07-27 18:44:27.402782+03	13	3+3 =	1	[{"added": {}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "9"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "8"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "7"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "6"}}]	8	1
+261	2020-07-27 18:44:47.889589+03	5	Артем	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+262	2020-08-03 11:59:51.45873+03	30	AppointTo object (30)	2	[{"changed": {"fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	12	1
+263	2020-08-03 12:00:34.053389+03	36	AppointTo object (36)	2	[{"changed": {"fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	12	1
+264	2020-08-03 13:50:20.477255+03	5	Артем	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+265	2020-08-03 13:51:49.988324+03	109	user	3		10	1
+266	2020-08-03 13:54:28.155717+03	108	user	3		10	1
+267	2020-08-03 14:30:02.19366+03	118	user	3		10	1
+268	2020-08-03 16:50:47.092085+03	5	Артем	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+269	2020-08-05 12:01:36.721214+03	129	user	3		10	1
+270	2020-08-05 16:00:03.094883+03	7	Оцените опрос по 4 бальной шкале	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441"]}}]	8	1
+271	2020-08-05 16:05:15.760051+03	1	2/7+5/7=?	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}]	8	1
+272	2020-08-05 16:08:56.44344+03	5	Артем	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+273	2020-08-07 15:13:19.602084+03	5	Артем	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+274	2020-08-07 15:18:04.321901+03	3	Who is the bigest on the earth?	2	[{"changed": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "whale", "fields": ["\\u0411\\u0430\\u043b\\u043b\\u044b"]}}]	8	1
+275	2020-08-07 15:20:25.403022+03	1	Математика	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+276	2020-08-07 15:55:26.200556+03	5	Новый	2	[{"changed": {"fields": ["\\u041d\\u0430\\u0437\\u0432\\u0430\\u043d\\u0438\\u0435 \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0430"]}}]	9	1
+302	2020-08-18 14:08:18.233149+03	11	2+2=?	2	[]	8	1
+304	2020-08-18 15:19:11.284743+03	206	user	3		10	1
+305	2020-08-18 15:19:11.333075+03	202	user	3		10	1
+307	2020-08-18 15:30:27.456796+03	208	user	3		10	1
+309	2020-08-18 15:33:11.601246+03	209	user	3		10	1
+310	2020-08-18 15:34:42.746307+03	210	user	3		10	1
+311	2020-08-18 15:42:33.266031+03	212	user	3		10	1
+312	2020-08-18 15:51:50.851498+03	191	user2	3		10	1
+313	2020-08-18 15:56:30.5667+03	11	2+2=?	3		8	5
+277	2020-08-07 15:57:34.867772+03	2	user1	2	[{"added": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (40)"}}, {"added": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (41)"}}, {"added": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (42)"}}, {"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (2)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	7	1
+278	2020-08-07 15:57:53.909404+03	4	user2	2	[{"added": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (43)"}}]	7	1
+279	2020-08-07 15:58:47.299937+03	4	user2	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (3)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}, {"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (5)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}, {"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (20)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}, {"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (43)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	7	1
+280	2020-08-07 15:59:22.254756+03	3	user	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (30)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}, {"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (36)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}, {"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (38)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}, {"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (39)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	7	1
+281	2020-08-07 15:59:54.40097+03	2	user1	2	[{"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (2)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	7	1
+282	2020-08-07 16:00:42.218163+03	6	user3	2	[{"added": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (44)"}}, {"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (21)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}, {"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (22)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}, {"changed": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (23)", "fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	7	1
+283	2020-08-07 16:01:29.39833+03	5	manager	2	[{"added": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (45)"}}, {"added": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (46)"}}, {"added": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (47)"}}, {"added": {"name": " \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a  \\u0441\\u043e\\u0442\\u0440\\u0443\\u0434\\u043d\\u0438\\u043a\\u0443 ", "object": "AppointTo object (48)"}}]	7	1
+284	2020-08-10 12:34:39.149747+03	39	AppointTo object (39)	2	[{"changed": {"fields": ["\\u0414\\u0430\\u0442\\u0430 \\u043e\\u043a\\u043e\\u043d\\u0447\\u0430\\u043d\\u0438\\u044f \\u043e\\u043f\\u0440\\u043e\\u0441\\u0430"]}}]	12	1
+285	2020-08-10 15:08:31.287761+03	7	Оцените опрос по 4 бальной шкале	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}]	8	1
+286	2020-08-10 18:26:33.729478+03	1	2/7+5/7=?	2	[{"changed": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "1", "fields": ["\\u0411\\u0430\\u043b\\u043b\\u044b"]}}, {"changed": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "7/7", "fields": ["\\u0411\\u0430\\u043b\\u043b\\u044b"]}}]	8	1
+287	2020-08-11 18:07:59.806533+03	138	user	3		10	1
+288	2020-08-14 16:02:58.305072+03	13	3+3 =	2	[{"changed": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "6", "fields": ["\\u0412\\u0440\\u0435\\u043c\\u044f \\u043d\\u0430 \\u043e\\u0442\\u0432\\u0435\\u0442, \\u0441\\u0435\\u043a."]}}]	8	1
+289	2020-08-14 16:16:40.290946+03	4	What is the capital of Belarus?	2	[]	8	1
+290	2020-08-17 11:13:56.696369+03	195	user	3		10	1
+291	2020-08-17 16:45:54.778302+03	196	user	3		10	1
+292	2020-08-18 11:31:52.769594+03	197	user	3		10	1
+293	2020-08-18 13:44:32.109965+03	198	user	3		10	1
+294	2020-08-18 13:44:32.159304+03	121	user	3		10	1
+295	2020-08-18 13:53:17.533711+03	199	user	3		10	1
+296	2020-08-18 13:56:17.93512+03	194	user2	3		10	1
+297	2020-08-18 13:56:53.306392+03	200	user	3		10	1
+298	2020-08-18 14:00:49.905226+03	201	user	3		10	1
+299	2020-08-18 14:02:55.468428+03	203	user	3		10	1
+300	2020-08-18 14:03:47.184751+03	204	user	3		10	1
+314	2020-08-18 15:57:30.242436+03	14	2+2=?	1	[{"added": {}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "1"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "4"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "6"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "8"}}]	8	5
+315	2020-08-18 15:58:14.012878+03	1	Математика	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	5
+316	2020-08-18 16:00:19.148717+03	14	2+2=?	2	[{"changed": {"fields": ["\\u0422\\u0438\\u043f \\u0432\\u043e\\u043f\\u0440\\u043e\\u0441\\u043e\\u0432"]}}]	8	5
+317	2020-08-18 16:00:52.345111+03	222	manager	3		10	5
+318	2020-08-20 11:32:27.547312+03	136	user	3		10	5
+319	2020-08-20 11:32:27.760832+03	131	user	3		10	5
+320	2020-08-20 12:07:28.148875+03	225	user	3		10	1
+321	2020-08-20 12:07:28.196366+03	224	user	3		10	1
+322	2020-08-20 12:24:59.202561+03	133	user	3		10	1
+323	2020-08-20 12:24:59.246868+03	132	user	3		10	1
+324	2020-08-20 15:26:44.257476+03	227	user	3		10	1
+325	2020-08-20 15:26:44.29933+03	226	user	3		10	1
+326	2020-08-20 16:37:54.82547+03	228	user	3		10	1
+327	2020-08-20 16:37:54.863631+03	130	user	3		10	1
+328	2020-08-20 17:22:51.180688+03	230	user	3		10	1
+329	2020-08-20 17:22:51.22179+03	229	user	3		10	1
+330	2020-08-20 17:25:53.282617+03	234	user	3		10	1
+331	2020-08-20 17:25:53.318661+03	233	user	3		10	1
+332	2020-08-20 17:25:53.329303+03	232	user	3		10	1
+333	2020-08-20 17:32:41.976823+03	238	user	3		10	1
+334	2020-08-20 17:32:41.999586+03	237	user	3		10	1
+335	2020-08-20 17:32:42.010775+03	236	user	3		10	1
+336	2020-08-20 17:32:42.022499+03	235	user	3		10	1
+337	2020-08-20 17:40:45.5039+03	240	user	3		10	1
+338	2020-08-20 17:44:10.75684+03	241	user	3		10	1
+339	2020-08-20 18:24:03.420334+03	147	user	3		10	1
+340	2020-08-20 18:24:03.462022+03	146	user	3		10	1
+341	2020-08-20 18:24:03.472587+03	145	user	3		10	1
+342	2020-08-20 18:24:03.483924+03	122	user	3		10	1
+343	2020-08-20 18:24:03.495187+03	106	user	3		10	1
+344	2020-08-20 18:32:30.117132+03	251	user	3		10	1
+345	2020-08-20 18:32:30.15883+03	250	user	3		10	1
+346	2020-08-20 18:32:30.16955+03	249	user	3		10	1
+347	2020-08-20 18:32:30.180736+03	248	user	3		10	1
+348	2020-08-20 18:56:24.276858+03	182	user2	3		10	1
+349	2020-08-20 18:56:24.32228+03	181	user2	3		10	1
+350	2020-08-20 18:56:24.333136+03	180	user2	3		10	1
+351	2020-08-20 18:56:24.343998+03	178	user2	3		10	1
+352	2020-08-20 18:58:26.388611+03	179	user2	3		10	1
+353	2020-08-20 19:09:48.267328+03	243	user	3		10	1
+354	2020-08-20 19:09:48.379308+03	242	user	3		10	1
+355	2020-08-20 19:09:48.45126+03	239	user	3		10	1
+356	2020-08-20 19:09:48.481188+03	231	user	3		10	1
+357	2020-08-20 19:09:48.492005+03	128	user	3		10	1
+358	2020-08-21 10:53:52.329728+03	267	user	3		10	1
+359	2020-08-21 10:53:52.56163+03	266	user	3		10	1
+360	2020-08-21 10:53:52.572721+03	265	user	3		10	1
+361	2020-08-21 10:53:52.583552+03	264	user	3		10	1
+362	2020-08-21 10:53:52.594643+03	263	user	3		10	1
+363	2020-08-21 13:26:23.315565+03	272	user	3		10	1
+364	2020-08-21 13:26:23.362001+03	271	user	3		10	1
+365	2020-08-21 13:26:23.372647+03	270	user	3		10	1
+366	2020-08-21 13:26:23.384066+03	269	user	3		10	1
+367	2020-08-21 14:18:57.137505+03	275	user	3		10	1
+368	2020-08-21 14:18:57.186661+03	274	user	3		10	1
+369	2020-08-21 14:18:57.1977+03	273	user	3		10	1
+370	2020-08-21 14:18:57.208601+03	268	user	3		10	1
+371	2020-08-23 19:56:06.695331+03	15	4+4	1	[{"added": {}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "2"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "4"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "8"}}, {"added": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "16\\\\2"}}]	8	1
+372	2020-08-23 19:56:57.744084+03	1	Математика	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+373	2020-08-23 19:57:12.745052+03	3	Общий	2	[{"changed": {"fields": ["\\u0412\\u043e\\u043f\\u0440\\u043e\\u0441\\u044b \\u0432 \\u0442\\u0435\\u043a\\u0443\\u0449\\u0435\\u043c \\u043e\\u043f\\u0440\\u043e\\u0441\\u043d\\u0438\\u043a\\u0435"]}}]	9	1
+374	2020-08-23 19:58:25.008798+03	3	Общий	2	[]	9	1
+375	2020-08-23 20:07:39.331845+03	247	user	3		10	1
+376	2020-08-23 20:07:39.398759+03	246	user	3		10	1
+377	2020-08-23 20:07:39.409818+03	245	user	3		10	1
+378	2020-08-23 20:07:39.420641+03	244	user	3		10	1
+379	2020-08-23 20:07:39.431994+03	211	user	3		10	1
+380	2020-08-23 20:07:39.443012+03	140	user	3		10	1
+381	2020-08-23 20:07:39.454659+03	139	user	3		10	1
+382	2020-08-23 20:07:39.465105+03	137	user	3		10	1
+383	2020-08-23 20:07:39.476673+03	135	user	3		10	1
+384	2020-08-23 22:36:25.728511+03	258	user	3		10	1
+385	2020-08-23 22:36:25.770128+03	257	user	3		10	1
+386	2020-08-23 22:36:25.780975+03	256	user	3		10	1
+387	2020-08-23 22:36:25.79202+03	255	user	3		10	1
+388	2020-08-23 22:36:25.803142+03	254	user	3		10	1
+389	2020-08-23 22:36:25.81453+03	253	user	3		10	1
+390	2020-08-23 22:36:25.825182+03	252	user	3		10	1
+391	2020-08-23 22:40:04.006148+03	3	Who is the bigest on the earth?	2	[{"changed": {"name": "\\u0432\\u0430\\u0440\\u0438\\u0430\\u043d\\u0442 \\u0434\\u043b\\u044f \\u043e\\u0442\\u0432\\u0435\\u0442\\u0430", "object": "whale", "fields": ["\\u0411\\u0430\\u043b\\u043b\\u044b"]}}]	8	1
+\.
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_content_type (id, app_label, model) FROM stdin;
+1	admin	logentry
+2	auth	permission
+3	auth	group
+4	auth	user
+5	contenttypes	contenttype
+6	sessions	session
+7	liz	employee
+8	liz	question
+9	liz	questionnaire
+10	liz	employeeanswer
+11	liz	apointmentto
+12	liz	appointto
+13	liz	answer
+\.
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2020-06-23 13:07:35.828735+03
+2	auth	0001_initial	2020-06-23 13:07:36.347709+03
+3	admin	0001_initial	2020-06-23 13:07:37.268194+03
+4	admin	0002_logentry_remove_auto_add	2020-06-23 13:07:37.410856+03
+5	admin	0003_logentry_add_action_flag_choices	2020-06-23 13:07:37.443036+03
+6	contenttypes	0002_remove_content_type_name	2020-06-23 13:07:37.484402+03
+7	auth	0002_alter_permission_name_max_length	2020-06-23 13:07:37.502804+03
+8	auth	0003_alter_user_email_max_length	2020-06-23 13:07:37.534095+03
+9	auth	0004_alter_user_username_opts	2020-06-23 13:07:37.568417+03
+10	auth	0005_alter_user_last_login_null	2020-06-23 13:07:37.595514+03
+11	auth	0006_require_contenttypes_0002	2020-06-23 13:07:37.605837+03
+12	auth	0007_alter_validators_add_error_messages	2020-06-23 13:07:37.63077+03
+13	auth	0008_alter_user_username_max_length	2020-06-23 13:07:37.704123+03
+14	auth	0009_alter_user_last_name_max_length	2020-06-23 13:07:37.746072+03
+15	auth	0010_alter_group_name_max_length	2020-06-23 13:07:37.78324+03
+16	auth	0011_update_proxy_permissions	2020-06-23 13:07:37.814609+03
+17	liz	0001_initial	2020-06-23 13:07:38.32086+03
+18	sessions	0001_initial	2020-06-23 13:07:38.894321+03
+19	liz	0002_auto_20200623_1027	2020-06-23 13:27:53.083039+03
+20	liz	0003_auto_20200623_1044	2020-06-23 13:44:24.950761+03
+21	liz	0004_auto_20200623_1200	2020-06-23 15:00:36.634195+03
+22	liz	0005_auto_20200623_1222	2020-06-23 15:23:01.433049+03
+23	liz	0006_auto_20200624_1305	2020-06-24 16:05:31.656709+03
+24	liz	0007_auto_20200625_1146	2020-06-25 14:46:28.194575+03
+25	liz	0008_auto_20200629_0928	2020-06-29 12:29:15.675931+03
+26	liz	0009_auto_20200629_1212	2020-06-29 15:12:18.275397+03
+27	liz	0010_auto_20200630_1051	2020-06-30 13:52:06.308965+03
+28	liz	0011_auto_20200814_1215	2020-08-14 15:15:24.954001+03
+29	liz	0012_answer_questionnaires	2020-08-14 16:12:41.569187+03
+\.
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+ffigoqbsjzuridz0auowzc8fpg6hsk2u	MWQyN2M3ZjY3YzlmYWY5ZDkzMDIwMzY4ZmVhZTdmMWUzMGRhOWI4ZTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwZThiZjUxYWYwNjhiMDZmMTc4MWYyZTQ2MjUzZTE0NjQ4M2VhYmE0In0=	2020-08-25 16:43:09.324206+03
+efj9hhzxaklrdy8pmtfg12d8el8n7z1e	MWQyN2M3ZjY3YzlmYWY5ZDkzMDIwMzY4ZmVhZTdmMWUzMGRhOWI4ZTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwZThiZjUxYWYwNjhiMDZmMTc4MWYyZTQ2MjUzZTE0NjQ4M2VhYmE0In0=	2020-09-01 14:15:09.936601+03
+1y4p4vg4iqcemvou8780o76qvudxg8nw	MWQyN2M3ZjY3YzlmYWY5ZDkzMDIwMzY4ZmVhZTdmMWUzMGRhOWI4ZTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwZThiZjUxYWYwNjhiMDZmMTc4MWYyZTQ2MjUzZTE0NjQ4M2VhYmE0In0=	2020-07-28 13:47:34.997197+03
+fpjzuupg6hobh6v2bl66edv69umt59wa	MWQyN2M3ZjY3YzlmYWY5ZDkzMDIwMzY4ZmVhZTdmMWUzMGRhOWI4ZTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwZThiZjUxYWYwNjhiMDZmMTc4MWYyZTQ2MjUzZTE0NjQ4M2VhYmE0In0=	2020-07-28 16:21:09.269329+03
+ynbmdn6vm34hamdw3tm2aceku3ikc1ps	MWQyN2M3ZjY3YzlmYWY5ZDkzMDIwMzY4ZmVhZTdmMWUzMGRhOWI4ZTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwZThiZjUxYWYwNjhiMDZmMTc4MWYyZTQ2MjUzZTE0NjQ4M2VhYmE0In0=	2020-09-06 15:58:56.298474+03
+dz5xzqwc9loebouftylixykanvarxkkx	MWQyN2M3ZjY3YzlmYWY5ZDkzMDIwMzY4ZmVhZTdmMWUzMGRhOWI4ZTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwZThiZjUxYWYwNjhiMDZmMTc4MWYyZTQ2MjUzZTE0NjQ4M2VhYmE0In0=	2020-09-06 20:02:54.269946+03
+26isezlhcfb8stdzgoi35uw84izmusfr	MWQyN2M3ZjY3YzlmYWY5ZDkzMDIwMzY4ZmVhZTdmMWUzMGRhOWI4ZTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwZThiZjUxYWYwNjhiMDZmMTc4MWYyZTQ2MjUzZTE0NjQ4M2VhYmE0In0=	2020-09-07 19:25:54.295667+03
+kl0ins46a36bqdawt4ke2vcpsgui5e46	MWQyN2M3ZjY3YzlmYWY5ZDkzMDIwMzY4ZmVhZTdmMWUzMGRhOWI4ZTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwZThiZjUxYWYwNjhiMDZmMTc4MWYyZTQ2MjUzZTE0NjQ4M2VhYmE0In0=	2020-08-10 10:01:44.044179+03
+17rsz4ks1n2ols432i6v30hkamoptow6	MWQyN2M3ZjY3YzlmYWY5ZDkzMDIwMzY4ZmVhZTdmMWUzMGRhOWI4ZTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwZThiZjUxYWYwNjhiMDZmMTc4MWYyZTQ2MjUzZTE0NjQ4M2VhYmE0In0=	2020-08-17 11:47:13.235856+03
+\.
+
+
+--
+-- Data for Name: liz_answer; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.liz_answer (id, variant, is_right_variant, answer_weight, questions_id, time_for_answer, questionnaires_id) FROM stdin;
+1	Windows-10	t	1	8	15	\N
+2	System X	t	2	8	15	\N
+4	X3-DOS	t	2	8	15	\N
+3	Linux	t	2	8	15	\N
+5	1	t	1	7	15	\N
+6	2	t	1	7	15	\N
+7	3	t	1	7	15	\N
+8	4	t	1	7	15	\N
+9	ничего	t	1	6	15	\N
+10	сдвинуть на  1 раньше	t	1	6	15	\N
+11	укортить на 1 час	t	1	6	15	\N
+12	работать 4 дня	t	1	6	15	\N
+13	да	t	1	5	15	\N
+14	нет	t	1	5	15	\N
+15	скорее да	t	1	5	15	\N
+16	скорее нет	t	1	5	15	\N
+17	Abudabi	f	0	4	15	\N
+18	Moscow	f	0	4	15	\N
+19	Minsk	t	4	4	15	\N
+20	Bilnus	f	0	4	15	\N
+21	gippopothamus	f	0	3	15	\N
+22	indian elephant	f	0	3	15	\N
+24	cash a lot)	f	0	3	15	\N
+31	7/14	f	0	1	15	\N
+32	все неправильные	f	0	1	15	\N
+33	Studient	t	1	9	15	\N
+34	Unior	t	1	9	15	\N
+35	Midl	t	1	9	15	\N
+36	Senior	t	1	9	15	\N
+49	9	f	0	13	15	\N
+50	8	f	0	13	15	\N
+51	7	f	0	13	15	\N
+29	1	t	2	1	15	\N
+30	7/7	t	3	1	15	\N
+52	6	t	2	13	25	\N
+53	1	f	0	14	15	\N
+54	4	t	5	14	15	\N
+55	6	f	0	14	15	\N
+56	8	f	0	14	15	\N
+57	2	f	0	15	15	\N
+58	4	f	0	15	15	\N
+59	8	t	2	15	17	\N
+60	16\\2	t	4	15	17	\N
+23	whale	t	5	3	15	\N
+\.
+
+
+--
+-- Data for Name: liz_appointto; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.liz_appointto (id, date_start, date_finish, questionnaires_id, users_id) FROM stdin;
+40	2020-08-07	2020-08-31	3	2
+41	2020-08-07	2020-08-31	1	2
+42	2020-08-07	2020-08-31	5	2
+3	2020-06-25	2020-08-31	2	4
+5	2020-06-29	2020-08-31	1	4
+20	2020-06-26	2020-08-31	3	4
+43	2020-08-07	2020-08-31	5	4
+30	2020-07-16	2020-08-31	1	3
+36	2020-07-20	2020-08-31	5	3
+38	2020-07-01	2020-08-31	3	3
+2	2020-06-23	2020-08-31	2	2
+21	2020-06-26	2020-08-31	1	6
+22	2020-06-26	2020-08-31	3	6
+23	2020-06-26	2020-08-31	2	6
+44	2020-08-07	2020-08-31	5	6
+45	2020-08-07	2020-08-31	3	5
+46	2020-08-07	2020-08-31	2	5
+47	2020-08-07	2020-08-31	1	5
+48	2020-08-07	2020-08-31	5	5
+39	2020-07-24	2020-08-30	2	3
+\.
+
+
+--
+-- Data for Name: liz_employee; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.liz_employee (id, department, user_type, user_name_id) FROM stdin;
+4	Maintaince	CW	4
+3	Maintaince	MG	1
+2	Building	CW	3
+6	Maintaince	CW	2
+5	Mamage	CW	5
+\.
+
+
+--
+-- Data for Name: liz_employeeanswer; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.liz_employeeanswer (id, user_answer, is_correct, questions_id, users_id, questionnaires_id, in_time) FROM stdin;
+259	Minsk	t	4	4	5	t
+260	сдвинуть на  1 раньше	t	6	4	5	t
+261	укортить на 1 час	t	6	4	5	t
+262	whale	t	3	3	5	t
+123	да	t	5	3	3	t
+6	4	t	1	4	1	t
+10	Moscow	f	4	2	2	t
+276	Bilnus	f	4	3	5	t
+277	3	t	7	3	5	f
+14	baobub	f	3	6	2	t
+278	1	t	1	3	5	f
+279	8	t	15	3	3	t
+280	8	t	15	3	1	t
+142	whale	t	3	2	2	t
+143	3	t	7	2	2	t
+281	1	t	7	3	1	t
+282	6	t	13	3	1	t
+283	8	f	14	3	1	t
+284	Midl	t	9	3	1	t
+148	сдвинуть на  1 раньше	t	6	3	3	t
+149	укортить на 1 час	t	6	3	3	t
+150	работать 4 дня	t	6	3	3	t
+151	Unior	t	9	3	3	t
+152	Windows-10	t	8	3	3	t
+153	Linux	t	8	3	3	t
+154	2	t	7	3	3	t
+155	7/7	t	1	2	2	t
+156	работать 4 дня	t	6	2	3	t
+157	да	t	5	2	3	t
+158	Unior	t	9	2	3	t
+159	System X	t	8	2	3	t
+160	3	t	7	2	3	t
+161	4	t	7	2	1	t
+162	1	t	1	2	1	t
+163	7/14	f	1	2	1	t
+164	8	f	13	2	1	t
+285	7/7	t	1	3	1	t
+166	Minsk	t	4	4	2	t
+286	whale	t	3	3	2	t
+168	все неправильные	f	1	4	2	t
+169	whale	t	3	4	2	t
+170	2	t	7	4	2	t
+171	ничего	t	6	4	3	t
+172	скорее да	t	5	4	3	t
+173	Studient	t	9	4	3	t
+174	X3-DOS	t	8	4	3	t
+287	4	t	7	3	2	t
+288	1	t	1	3	2	f
+289	7/7	t	1	3	2	f
+290	Minsk	t	4	3	2	t
+110	Windows-10	t	8	3	5	t
+111	Linux	t	8	3	5	t
+112	сдвинуть на  1 раньше	t	6	3	5	t
+113	укортить на 1 час	t	6	3	5	t
+114	работать 4 дня	t	6	3	5	t
+175	3	t	7	4	3	t
+176	4	t	7	4	5	t
+177	gippopothamus	f	3	4	5	t
+184	Windows-10	t	8	4	5	t
+185	System X	t	8	4	5	t
+186	Linux	t	8	4	5	t
+187	X3-DOS	t	8	4	5	t
+188	6	t	13	4	5	t
+189	1	t	1	4	5	t
+190	7/7	t	1	4	5	t
+192	Unior	t	9	4	1	t
+214	2	t	7	4	1	t
+215	6	t	13	4	1	t
+217	1	t	1	5	1	t
+218	2	t	7	5	1	t
+220	Midl	t	9	5	1	t
+221	6	t	13	5	1	t
+223	4	t	14	5	1	t
+\.
+
+
+--
+-- Data for Name: liz_question; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.liz_question (id, question, image, question_type) FROM stdin;
+14	2+2=?	photos/2020/08/18/IMG20180617140505.jpg	Multi
+15	4+4	photos/2020/08/23/DSCN3630.jpg	Multi
+3	Who is the bigest on the earth?		
+6	Что бы вы поменяли в графике работы?		Multi
+5	Нравиться ли вам условия работы?		
+9	Ваш опыт в разработке	photos/2020/07/23/IMG_20180615_201138.jpg	One
+8	Какой операционной системой владеете?	photos/2020/07/23/IMG_20180622_153303.jpg	Multi
+7	Оцените опрос по 4 бальной шкале		One
+1	2/7+5/7=?		Multi
+13	3+3 =		One
+4	What is the capital of Belarus?		
+\.
+
+
+--
+-- Data for Name: liz_questionnaire; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.liz_questionnaire (id, title, description) FROM stdin;
+2	Английский	За 5 класс
+5	Новый	тест
+1	Математика	За 5 класс
+3	Общий	Разное
+\.
+
+
+--
+-- Data for Name: liz_questionnaire_questions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.liz_questionnaire_questions (id, questionnaire_id, question_id) FROM stdin;
+1	1	1
+3	2	3
+4	2	4
+5	3	5
+6	3	6
+7	3	7
+8	2	7
+9	1	7
+10	3	8
+11	3	9
+15	5	8
+16	5	6
+20	5	4
+25	2	1
+28	5	13
+29	5	1
+30	5	7
+32	5	3
+33	1	9
+34	1	13
+35	1	14
+36	1	15
+37	3	15
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.auth_group_id_seq', 1, true);
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 52, true);
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 52, true);
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 1, true);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.auth_user_id_seq', 5, true);
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 391, true);
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 13, true);
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 29, true);
+
+
+--
+-- Name: liz_answer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.liz_answer_id_seq', 60, true);
+
+
+--
+-- Name: liz_appointto_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.liz_appointto_id_seq', 49, true);
+
+
+--
+-- Name: liz_employee_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.liz_employee_id_seq', 6, true);
+
+
+--
+-- Name: liz_employeeanswer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.liz_employeeanswer_id_seq', 290, true);
+
+
+--
+-- Name: liz_question_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.liz_question_id_seq', 15, true);
+
+
+--
+-- Name: liz_questionnaire_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.liz_questionnaire_id_seq', 5, true);
+
+
+--
+-- Name: liz_questionnaire_questions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.liz_questionnaire_questions_id_seq', 37, true);
+
+
+--
+-- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_94350c0c_uniq UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_14a6b632_uniq UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: liz_answer liz_answer_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_answer
+    ADD CONSTRAINT liz_answer_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: liz_appointto liz_appointto_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_appointto
+    ADD CONSTRAINT liz_appointto_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: liz_employee liz_employee_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_employee
+    ADD CONSTRAINT liz_employee_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: liz_employee liz_employee_user_name_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_employee
+    ADD CONSTRAINT liz_employee_user_name_id_key UNIQUE (user_name_id);
+
+
+--
+-- Name: liz_employeeanswer liz_employeeanswer_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_employeeanswer
+    ADD CONSTRAINT liz_employeeanswer_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: liz_question liz_question_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_question
+    ADD CONSTRAINT liz_question_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: liz_questionnaire liz_questionnaire_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_questionnaire
+    ADD CONSTRAINT liz_questionnaire_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: liz_questionnaire_questions liz_questionnaire_questi_questionnaire_id_questio_4a182892_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_questionnaire_questions
+    ADD CONSTRAINT liz_questionnaire_questi_questionnaire_id_questio_4a182892_uniq UNIQUE (questionnaire_id, question_id);
+
+
+--
+-- Name: liz_questionnaire_questions liz_questionnaire_questions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_questionnaire_questions
+    ADD CONSTRAINT liz_questionnaire_questions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_group_name_a6ea08ec_like ON public.auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_group_id_b120cbf9; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON public.auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_permission_id_84c5c92e; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON public.auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_content_type_id_2f476e4b; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_permission_content_type_id_2f476e4b ON public.auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_group_id_97559544; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_user_groups_group_id_97559544 ON public.auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_user_id_6a12ed8b; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_user_groups_user_id_6a12ed8b ON public.auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_permission_id_1fbb5f2c; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_user_user_permissions_permission_id_1fbb5f2c ON public.auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_a95ead1b; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_user_user_permissions_user_id_a95ead1b ON public.auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_user_username_6821ab7c_like; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_user_username_6821ab7c_like ON public.auth_user USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: django_admin_log_content_type_id_c4bce8eb; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON public.django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_user_id_c564eba6; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX django_admin_log_user_id_c564eba6 ON public.django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_expire_date_a5c62663; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX django_session_expire_date_a5c62663 ON public.django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_c0390e0f_like; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX django_session_session_key_c0390e0f_like ON public.django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: liz_answer_questionnaires_id_0b671a99; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX liz_answer_questionnaires_id_0b671a99 ON public.liz_answer USING btree (questionnaires_id);
+
+
+--
+-- Name: liz_answer_questions_id_18a51b59; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX liz_answer_questions_id_18a51b59 ON public.liz_answer USING btree (questions_id);
+
+
+--
+-- Name: liz_appointto_questionnaires_id_35975364; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX liz_appointto_questionnaires_id_35975364 ON public.liz_appointto USING btree (questionnaires_id);
+
+
+--
+-- Name: liz_appointto_users_id_0094d267; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX liz_appointto_users_id_0094d267 ON public.liz_appointto USING btree (users_id);
+
+
+--
+-- Name: liz_employeeanswer_questionnaries_id_22ba3492; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX liz_employeeanswer_questionnaries_id_22ba3492 ON public.liz_employeeanswer USING btree (questionnaires_id);
+
+
+--
+-- Name: liz_employeeanswer_questions_id_6063e654; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX liz_employeeanswer_questions_id_6063e654 ON public.liz_employeeanswer USING btree (questions_id);
+
+
+--
+-- Name: liz_employeeanswer_users_id_3330bd53; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX liz_employeeanswer_users_id_3330bd53 ON public.liz_employeeanswer USING btree (users_id);
+
+
+--
+-- Name: liz_questionnaire_questions_question_id_b1f8baec; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX liz_questionnaire_questions_question_id_b1f8baec ON public.liz_questionnaire_questions USING btree (question_id);
+
+
+--
+-- Name: liz_questionnaire_questions_questionnaire_id_a14ac7e3; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX liz_questionnaire_questions_questionnaire_id_a14ac7e3 ON public.liz_questionnaire_questions USING btree (questionnaire_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: liz_answer liz_answer_questionnaires_id_0b671a99_fk_liz_questionnaire_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_answer
+    ADD CONSTRAINT liz_answer_questionnaires_id_0b671a99_fk_liz_questionnaire_id FOREIGN KEY (questionnaires_id) REFERENCES public.liz_questionnaire(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: liz_answer liz_answer_questions_id_18a51b59_fk_liz_question_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_answer
+    ADD CONSTRAINT liz_answer_questions_id_18a51b59_fk_liz_question_id FOREIGN KEY (questions_id) REFERENCES public.liz_question(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: liz_appointto liz_appointto_questionnaires_id_35975364_fk_liz_quest; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_appointto
+    ADD CONSTRAINT liz_appointto_questionnaires_id_35975364_fk_liz_quest FOREIGN KEY (questionnaires_id) REFERENCES public.liz_questionnaire(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: liz_appointto liz_appointto_users_id_0094d267_fk_liz_employee_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_appointto
+    ADD CONSTRAINT liz_appointto_users_id_0094d267_fk_liz_employee_id FOREIGN KEY (users_id) REFERENCES public.liz_employee(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: liz_employee liz_employee_user_name_id_88c85b58_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_employee
+    ADD CONSTRAINT liz_employee_user_name_id_88c85b58_fk_auth_user_id FOREIGN KEY (user_name_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: liz_employeeanswer liz_employeeanswer_questionnaires_id_7084b444_fk_liz_quest; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_employeeanswer
+    ADD CONSTRAINT liz_employeeanswer_questionnaires_id_7084b444_fk_liz_quest FOREIGN KEY (questionnaires_id) REFERENCES public.liz_questionnaire(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: liz_employeeanswer liz_employeeanswer_questions_id_6063e654_fk_liz_question_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_employeeanswer
+    ADD CONSTRAINT liz_employeeanswer_questions_id_6063e654_fk_liz_question_id FOREIGN KEY (questions_id) REFERENCES public.liz_question(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: liz_employeeanswer liz_employeeanswer_users_id_3330bd53_fk_liz_employee_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_employeeanswer
+    ADD CONSTRAINT liz_employeeanswer_users_id_3330bd53_fk_liz_employee_id FOREIGN KEY (users_id) REFERENCES public.liz_employee(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: liz_questionnaire_questions liz_questionnaire_qu_question_id_b1f8baec_fk_liz_quest; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_questionnaire_questions
+    ADD CONSTRAINT liz_questionnaire_qu_question_id_b1f8baec_fk_liz_quest FOREIGN KEY (question_id) REFERENCES public.liz_question(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: liz_questionnaire_questions liz_questionnaire_qu_questionnaire_id_a14ac7e3_fk_liz_quest; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.liz_questionnaire_questions
+    ADD CONSTRAINT liz_questionnaire_qu_questionnaire_id_a14ac7e3_fk_liz_quest FOREIGN KEY (questionnaire_id) REFERENCES public.liz_questionnaire(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

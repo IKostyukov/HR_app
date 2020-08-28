@@ -1,4 +1,4 @@
-django
-psycopg2
-dj_database_url
-pillow
+dj-database-url==0.5.0
+Django==3.0.7
+Pillow==7.1.2
+psycopg2==2.8.5
